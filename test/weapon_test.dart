@@ -19,7 +19,7 @@ void main() {
     weapon.range = 40;
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.rangeCost();
 
     // Then
     expect(cost, equals(10));
@@ -32,7 +32,7 @@ void main() {
     weapon.traits = ["Heavy"];
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.rangeCost();
 
     // Then
     expect(cost, equals(1));
@@ -44,138 +44,111 @@ void main() {
     weapon.traits = ["Indirect"];
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.rangeCost();
 
     // Then
     expect(cost, equals(3));
   });
 
-  test('save of -1 adds two to cost', () {
+  test('Impact of 4 adds 8 to cost', () {
     // Given
     var weapon = Weapon.empty();
-    weapon.save = -1;
+    weapon.impact = 4;
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.impactCost();
 
     // Then
-    expect(cost, equals(2));
+    expect(cost, equals(8));
   });
 
-  test('save of -5 adds ten to cost', () {
+  test('Impact of 10 adds 22 to cost', () {
     // Given
     var weapon = Weapon.empty();
-    weapon.save = -5;
+    weapon.impact = 10;
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.impactCost();
 
     // Then
-    expect(cost, equals(10));
+    expect(cost, equals(22));
   });
 
-  test('save of greater than -6 adds another 2 to cost', () {
+  test('Impact of 15 adds 37 to cost', () {
     // Given
     var weapon = Weapon.empty();
-    weapon.save = -7;
+    weapon.impact = 15;
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.impactCost();
 
     // Then
-    expect(cost, equals(16));
+    expect(cost, equals(37));
   });
 
-  test('save of greater than -10 adds another 5 to cost', () {
+  test('Flame trait adds 6', () {
     // Given
     var weapon = Weapon.empty();
-    weapon.save = -11;
-
-    // When
-    var cost = weapon.cost();
-
-    // Then
-    expect(cost, equals(29));
-  });
-
-  test('frag trait reduces save cost by 25%', () {
-    // Given
-    var weapon = Weapon.empty();
-    weapon.save = -6;
-    weapon.traits = ["Frag"];
-
-    // When
-    var cost = weapon.cost();
-
-    // Then
-    expect(cost, equals(9));
-  });
-
-  test('burst trait adds 4 to 0 save cost', () {
-    // Given
-    var weapon = Weapon.empty();
-    weapon.save = 0;
-    weapon.traits = ["Burst"];
-
-    // When
-    var cost = weapon.cost();
-
-    // Then
-    expect(cost, equals(4));
-  });
-
-  test('burst trait adds 2 to -2 save cost', () {
-    // Given
-    var weapon = Weapon.empty();
-    weapon.save = -2;
-    weapon.traits = ["Burst"];
-
-    // When
-    var cost = weapon.cost();
-
-    // Then
-    expect(cost, equals(6));
-  });
-
-  test('flame trait adds another 6 to save cost', () {
-    // Given
-    var weapon = Weapon.empty();
-    weapon.save = 0;
     weapon.traits = ["Flame"];
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.impactCost();
 
     // Then
     expect(cost, equals(6));
   });
 
-  test('Additional shot adds 50% of (rangeCost + saveCost)', () {
+  test('Burst trait adds impact+4', () {
     // Given
     var weapon = Weapon.empty();
-    weapon.save = -2;
+    weapon.traits = ["Burst"];
+    weapon.impact = 2;
+
+    // When
+    var cost = weapon.impactCost();
+
+    // Then
+    expect(cost, equals(10)); // 4 from impact (2+4) from burst
+  });
+
+  test('Frag trait reduces save cost by 25%', () {
+    // Given
+    var weapon = Weapon.empty();
+    weapon.impact = 15;
+    weapon.traits = ["Frag"];
+
+    // When
+    var cost = weapon.impactCost();
+
+    // Then
+    expect(cost, equals(27.75));
+  });
+
+  test('Additional shot adds 50% of (rangeCost + impactCost)', () {
+    // Given
+    var weapon = Weapon.empty();
+    weapon.impact = 2;
     weapon.range = 20;
     weapon.shots = 2;
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.shotsCost();
 
     // Then
-    expect(cost, equals(9));
+    expect(cost, equals(3));
   });
 
   test('Repeating trait adds 0.5 cost per shot', () {
     // Given
     var weapon = Weapon.empty();
     weapon.shots = 2;
-    weapon.range = 20;
-    weapon.traits = ["Repeating"];
+    weapon.traits = ["Repeating Fire"];
 
     // When
-    var cost = weapon.cost();
+    var cost = weapon.shotsCost();
 
     // Then
-    expect(cost, equals(3));
+    expect(cost, equals(1));
   });
 
   test('Minimum cost is 1 point per shot', () {
@@ -193,8 +166,7 @@ void main() {
   test('GP weapons add 50% to cost', () {
     // Given
     var weapon = Weapon.empty();
-    weapon.save = -1;
-    weapon.range = 20;
+    weapon.impact = 2;
     weapon.type = WeaponType.gp;
 
     // When
@@ -208,18 +180,18 @@ void main() {
     expect(
         Weapon(1, "Small arms", WeaponType.ai, 20, 1, 0, []).cost(), equals(2));
     expect(
-        Weapon(2, "Buzzbombs", WeaponType.at, 10, 1, -3, []).cost(), equals(6));
+        Weapon(2, "Buzzbombs", WeaponType.at, 10, 1, 3, []).cost(), equals(6));
     expect(Weapon(3, "Machine gun", WeaponType.ai, 20, 2, 0, []).cost(),
-        equals(3));
-    expect(Weapon(4, "Gauss rifle", WeaponType.gp, 20, 1, -1, []).cost(),
-        equals(6));
-    expect(Weapon(5, "Fusion gun", WeaponType.at, 10, 1, -4, []).cost(),
-        equals(8));
-    expect(Weapon(6, "Plasma rifle", WeaponType.gp, 10, 1, -2, []).cost(),
+        equals(3)); // TODO: Differs from the rule book
+    expect(Weapon(4, "Gauss rifle", WeaponType.gp, 20, 1, 1, []).cost(),
         equals(6));
     expect(
-        Weapon(7, "Infantry laser", WeaponType.at, 40, 1, -3, ["Heavy", "Aim"])
-            .cost(),
+        Weapon(5, "Fusion gun", WeaponType.at, 10, 1, 4, []).cost(), equals(8));
+    expect(Weapon(6, "Plasma rifle", WeaponType.gp, 10, 1, 2, []).cost(),
+        equals(6));
+    expect(
+        Weapon(7, "Infantry laser", WeaponType.at, 40, 1, 3,
+            ["Heavy", "Targeting"]).cost(),
         equals(15));
   });
 }

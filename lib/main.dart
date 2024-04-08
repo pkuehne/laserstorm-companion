@@ -23,6 +23,11 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const LaserStormHomePage(),
+        // routes: {
+        //   '/': (context) => HomeScreen(),
+        //   '/second': (context) => SecondScreen(),
+        //   '/third': (context) => ThirdScreen(),
+        // },
       ),
     );
   }

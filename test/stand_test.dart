@@ -2,16 +2,35 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:weasel/src/laserstorm/stand.dart';
 import 'package:weasel/src/laserstorm/weapon.dart';
 
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+
+@GenerateNiceMocks([MockSpec<Weapon>()])
+import 'stand_test.mocks.dart';
+
 void main() {
   test('Speed of 4 is free', () {
     // Given
     var stand = Stand.empty();
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(1)); // 1 point per shot
+    expect(cost, equals(0));
+  });
+
+  test('8 extra point of speed cost 2', () {
+    // Given
+    var stand = Stand.empty();
+    stand.type = StandType.vehicle;
+    stand.speed = 12;
+
+    // When
+    var cost = stand.speedCost();
+
+    // Then
+    expect(cost, equals(2));
   });
 
   test('Speed of 8 is free for cav', () {
@@ -21,89 +40,117 @@ void main() {
     stand.speed = 8;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(1)); // 1 point per shot
+    expect(cost, equals(0));
   });
 
-  test('Walkers cost 2 more', () {
+  test('Speed of 8 is free for aircraft', () {
+    // Given
+    var stand = Stand.empty();
+    stand.type = StandType.aircraft;
+    stand.speed = 8;
+
+    // When
+    var cost = stand.speedCost();
+
+    // Then
+    expect(cost, equals(0));
+  });
+
+  test('Walkers cost 2 more for movement', () {
     // Given
     var stand = Stand.empty();
     stand.speed = 8;
+    stand.type = StandType.scout;
     stand.movement = MovementType.walker;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(3)); // 1 point per shot
+    expect(cost, equals(3));
   });
 
-  test('Grav cost 4 more', () {
+  test('Grav cost 4 more for movement', () {
     // Given
     var stand = Stand.empty();
     stand.speed = 8;
+    stand.type = StandType.scout;
     stand.movement = MovementType.grav;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(5)); // 1 point per shot
+    expect(cost, equals(5));
   });
 
   test('Grav cost 4 more but 1 less with minimum move distance', () {
     // Given
     var stand = Stand.empty();
     stand.speed = 8;
+    stand.type = StandType.scout;
     stand.movement = MovementType.grav;
     stand.hasMinimumMove = true;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(4)); // 1 point per shot
+    expect(cost, equals(4));
   });
 
-  test('Move Out trait costs 0.5 more', () {
+  test('Move Out trait costs 1 more', () {
     // Given
     var stand = Stand.empty();
     stand.speed = 8;
     stand.traits = ["Move Out"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(2)); // Rounded up
+    expect(cost, equals(2));
   });
 
-  test('Scouts trait costs 1 more', () {
+  test('Dogfighter trait costs 1 more', () {
     // Given
     var stand = Stand.empty();
     stand.speed = 8;
-    stand.traits = ["Scouts"];
+    stand.traits = ["Dogfighter"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(2)); // 1 point per shot
+    expect(cost, equals(2));
   });
 
-  test('Jump Troops trait costs 1 more', () {
+  test('Jump Troops trait costs 0.5 more', () {
     // Given
     var stand = Stand.empty();
     stand.speed = 8;
     stand.traits = ["Jump Troops"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.speedCost();
 
     // Then
-    expect(cost, equals(2)); // 1 point per shot
+    expect(cost, equals(1.5));
+  });
+
+  test('Transport capacity of 0 is free', () {
+    // Given
+    var stand = Stand.empty();
+    stand.transports = 0;
+
+    // When
+    var cost = stand.transportCost();
+
+    // Then
+    expect(cost, equals(0));
   });
 
   test('Transport capacity is 1.5 per stand', () {
@@ -113,10 +160,10 @@ void main() {
     stand.transports = 2;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.transportCost();
 
     // Then
-    expect(cost, equals(3)); // 1 point per shot
+    expect(cost, equals(3));
   });
 
   test('Gun-Only can transport 1 for 1 point', () {
@@ -127,23 +174,24 @@ void main() {
     stand.traits = ["Gun Only"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.transportCost();
 
     // Then
-    expect(cost, equals(1)); // 1 point per shot
+    expect(cost, equals(1));
   });
 
   test('Weapon slots are free for aim 5+', () {
     // Given
     var stand = Stand.empty();
     var weapon = Weapon.empty();
-    stand.slots = [WeaponSlot(weapon: weapon), WeaponSlot(weapon: weapon)];
+    stand.aim = 5;
+    stand.primaries = [weapon, weapon];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.aimCost();
 
     // Then
-    expect(cost, equals(2)); // Weapon costs 1
+    expect(cost, equals(0));
   });
 
   test('Weapon slot is 4 for aim 3+', () {
@@ -152,13 +200,13 @@ void main() {
     stand.type = StandType.vehicle;
     stand.aim = 3;
     var weapon = Weapon.empty();
-    stand.slots = [WeaponSlot(weapon: weapon)];
+    stand.primaries = [weapon];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.aimCost();
 
     // Then
-    expect(cost, equals(10)); // Weapon costs 1 as well * 2 for vehicle
+    expect(cost, equals(4));
   });
 
   test('Primary weapon slot is 8 for aim 3+ and two weapons', () {
@@ -167,57 +215,29 @@ void main() {
     stand.type = StandType.vehicle;
     stand.aim = 3;
     var weapon = Weapon.empty();
-    stand.slots = [WeaponSlot(weapon: weapon), WeaponSlot(weapon: weapon)];
+    stand.primaries = [weapon, weapon];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.aimCost();
 
     // Then
-    expect(cost, equals(20)); // Weapon costs 1 as well * 20 for vehicle
+    expect(cost, equals(8));
   });
 
-  test('Primary weapon slot is 6 for aim 3+ and two weapons for infantry', () {
+  test('Primary weapon slot is +2*2 for aim 3+ and two weapons for infantry',
+      () {
     // Given
     var stand = Stand.empty();
     stand.aim = 3;
     stand.type = StandType.infantry;
     var weapon = Weapon.empty();
-    stand.slots = [WeaponSlot(weapon: weapon), WeaponSlot(weapon: weapon)];
+    stand.primaries = [weapon, weapon];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.aimCost();
 
     // Then
-    expect(cost, equals(6)); // Weapon costs 1 as well
-  });
-
-  test('Weapon with -4 save adds +4', () {
-    // Given
-    var stand = Stand.empty();
-    var weapon = Weapon.empty();
-    weapon.save = -4;
-    weapon.range = 20;
-    stand.slots = [WeaponSlot(weapon: weapon)];
-
-    // When
-    var cost = stand.cost();
-
-    // Then
-    expect(cost, equals(14)); // Weapon costs 10
-  });
-  test('Weapon with -4 save and short range does not add _+4', () {
-    // Given
-    var stand = Stand.empty();
-    var weapon = Weapon.empty();
-    weapon.save = -4;
-    weapon.range = 10;
-    stand.slots = [WeaponSlot(weapon: weapon)];
-
-    // When
-    var cost = stand.cost();
-
-    // Then
-    expect(cost, equals(8)); // Weapon costs 8
+    expect(cost, equals(4));
   });
 
   test('Tank Hunter trait adds 1', () {
@@ -225,14 +245,14 @@ void main() {
     var stand = Stand.empty();
     stand.aim = 4;
     var weapon = Weapon.empty();
-    stand.slots = [WeaponSlot(weapon: weapon)];
+    stand.primaries = [weapon];
     stand.traits = ["Tank Hunters"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.aimCost();
 
     // Then
-    expect(cost, equals(3));
+    expect(cost, equals(2));
   });
 
   test('Precise Fire trait adds 1', () {
@@ -240,14 +260,26 @@ void main() {
     var stand = Stand.empty();
     stand.aim = 4;
     var weapon = Weapon.empty();
-    stand.slots = [WeaponSlot(weapon: weapon)];
+    stand.primaries = [weapon];
     stand.traits = ["Precise Fire"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.aimCost();
 
     // Then
-    expect(cost, equals(3));
+    expect(cost, equals(2));
+  });
+
+  test('Assault of 0 is free', () {
+    // Given
+    var stand = Stand.empty();
+    stand.assault = 0;
+
+    // When
+    var cost = stand.assaultCost();
+
+    // Then
+    expect(cost, equals(0));
   });
 
   test('Assault of 3 adds 1.5', () {
@@ -256,10 +288,10 @@ void main() {
     stand.assault = 3;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.assaultCost();
 
     // Then
-    expect(cost, equals(2)); // Rounding
+    expect(cost, equals(1.5));
   });
 
   test('Assault of more than 3 adds extra 1', () {
@@ -268,7 +300,7 @@ void main() {
     stand.assault = 4;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.assaultCost();
 
     // Then
     expect(cost, equals(3));
@@ -281,10 +313,10 @@ void main() {
     stand.traits = ["Charge"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.assaultCost();
 
     // Then
-    expect(cost, equals(2)); // Rounding
+    expect(cost, equals(1.5));
   });
 
   test('Melee Weapons trait adds 0.5', () {
@@ -294,10 +326,10 @@ void main() {
     stand.traits = ["Melee Weapons"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.assaultCost();
 
     // Then
-    expect(cost, equals(2)); //Rounding
+    expect(cost, equals(1.5));
   });
 
   test('Guard trait adds 1', () {
@@ -307,7 +339,7 @@ void main() {
     stand.traits = ["Guard"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.assaultCost();
 
     // Then
     expect(cost, equals(2));
@@ -320,7 +352,7 @@ void main() {
     stand.traits = ["Infest"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.assaultCost();
 
     // Then
     expect(cost, equals(2));
@@ -333,7 +365,7 @@ void main() {
     stand.save = 4;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.saveCost();
 
     // Then
     expect(cost, equals(2));
@@ -345,10 +377,10 @@ void main() {
     stand.save = 4;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.saveCost();
 
     // Then
-    expect(cost, equals(12));
+    expect(cost, equals(6));
   });
   test('Super Heavy cost 1 point per lower save', () {
     // Given
@@ -357,10 +389,10 @@ void main() {
     stand.save = 16;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.saveCost();
 
     // Then
-    expect(cost, equals(6));
+    expect(cost, equals(2));
   });
   test('Behemoth cost 1 point per lower save', () {
     // Given
@@ -369,10 +401,10 @@ void main() {
     stand.save = 22;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.saveCost();
 
     // Then
-    expect(cost, equals(8));
+    expect(cost, equals(2));
   });
 
   test('Stealth trait adds 2', () {
@@ -381,7 +413,7 @@ void main() {
     stand.traits = ["Stealth"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.saveCost();
 
     // Then
     expect(cost, equals(2));
@@ -393,7 +425,7 @@ void main() {
     stand.traits = ["Active Defences"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.saveCost();
 
     // Then
     expect(cost, equals(3));
@@ -405,7 +437,7 @@ void main() {
     stand.morale = 4;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.moraleCost();
 
     // Then
     expect(cost, equals(2));
@@ -416,7 +448,7 @@ void main() {
     stand.morale = 3;
 
     // When
-    var cost = stand.cost();
+    var cost = stand.moraleCost();
 
     // Then
     expect(cost, equals(4));
@@ -429,7 +461,7 @@ void main() {
     stand.traits = ["Tactical Deployment"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.moraleCost();
 
     // Then
     expect(cost, equals(2));
@@ -442,11 +474,12 @@ void main() {
     stand.traits = ["Inspiration"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.moraleCost();
 
     // Then
     expect(cost, equals(4));
   });
+
   test('Stubborn trait adds 1', () {
     // Given
     var stand = Stand.empty();
@@ -454,7 +487,7 @@ void main() {
     stand.traits = ["Stubborn"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.moraleCost();
 
     // Then
     expect(cost, equals(2));
@@ -466,9 +499,62 @@ void main() {
     stand.traits = ["Horde"];
 
     // When
-    var cost = stand.cost();
+    var cost = stand.moraleCost();
 
     // Then
     expect(cost, equals(2));
+  });
+
+  test('Third Fate trait adds 3', () {
+    // Given
+    var stand = Stand.empty();
+    stand.traits = ["Third Fate"];
+
+    // When
+    var cost = stand.otherCost();
+
+    // Then
+    expect(cost, equals(3));
+  });
+
+  test('Primary weapons cost full-price', () {
+    // Given
+    var stand = Stand.empty();
+    stand.aim = 4;
+    var weapon = MockWeapon();
+    when(weapon.cost()).thenReturn(20.0);
+    stand.primaries = [weapon, weapon];
+
+    // When
+    var cost = stand.weaponCost();
+
+    // Then
+    expect(cost, equals(40));
+  });
+
+  test('Secondary weapons cost 20% less', () {
+    // Given
+    var stand = Stand.empty();
+    stand.aim = 4;
+    var weapon = MockWeapon();
+    when(weapon.cost()).thenReturn(20.0);
+    stand.secondaries = [weapon];
+
+    // When
+    var cost = stand.weaponCost();
+
+    // Then
+    expect(cost, equals(16));
+  });
+
+  test('Empty stand costs 1', () {
+    // Given
+    var stand = Stand.empty();
+
+    // When
+    var cost = stand.cost();
+
+    // Then
+    expect(cost, equals(1));
   });
 }

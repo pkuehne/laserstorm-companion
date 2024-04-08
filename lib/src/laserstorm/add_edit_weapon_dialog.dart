@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../app_states.dart';
 import 'weapon.dart';
+import 'validators.dart' as validator;
 
 class AddEditWeaponDialog extends StatefulWidget {
   final int? id;
@@ -15,107 +16,26 @@ class AddEditWeaponDialog extends StatefulWidget {
   State<AddEditWeaponDialog> createState() => _AddEditWeaponDialogState();
 }
 
+const _weaponTypeList = [
+  DropdownMenuItem(
+    value: WeaponType.gp,
+    child: Text("General Purpose"),
+  ),
+  DropdownMenuItem(
+    value: WeaponType.ai,
+    child: Text("Anti-Infantry"),
+  ),
+  DropdownMenuItem(
+    value: WeaponType.at,
+    child: Text("Anti-Tank"),
+  ),
+];
+
 class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  /// The [Weapon] being added/edited
   Weapon weapon = Weapon.empty();
-
-  final _weaponTypeList = const [
-    DropdownMenuItem(
-      value: WeaponType.gp,
-      child: Text("General Purpose"),
-    ),
-    DropdownMenuItem(
-      value: WeaponType.ai,
-      child: Text("Anti-Infantry"),
-    ),
-    DropdownMenuItem(
-      value: WeaponType.at,
-      child: Text("Anti-Tank"),
-    ),
-  ];
-
-  String? nameValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a name!';
-    }
-    return null;
-  }
-
-  void saveName(String? value) {
-    weapon.name = value!;
-  }
-
-  void saveType(WeaponType? value) {
-    weapon.type = value!;
-  }
-
-  String? rangeValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a range!';
-    }
-    int numValue = int.parse(value);
-    if (numValue < 1) {
-      return "Range must be a positive number";
-    }
-    return null;
-  }
-
-  void saveRange(String? value) {
-    weapon.range = int.parse(value!);
-  }
-
-  String? shotsValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter number of shots!';
-    }
-    int numValue = int.parse(value);
-    if (numValue < 1) {
-      return "Shots must be a positive number";
-    }
-    return null;
-  }
-
-  void saveShots(String? value) {
-    weapon.shots = int.parse(value!);
-  }
-
-  String? saveValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Enter a negative number';
-    }
-    int numValue = int.parse(value);
-    if (numValue > 0) {
-      return "Number must be negative";
-    }
-    return null;
-  }
-
-  void saveSave(String? value) {
-    weapon.save = int.parse(value!);
-  }
-
-  String? traitValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return null;
-    }
-    List<String> traits = value.split(',');
-    List<String> traitList = [
-      "Aim",
-      "Burst",
-      "Flame",
-      "Frag",
-      "Heavy",
-      "Indirect",
-      "Rapid",
-      "Repeating",
-    ];
-    for (final trait in traits) {
-      if (!traitList.any((String value) => value.contains(trait.trim()))) {
-        return "$trait is not a valid trait";
-      }
-    }
-    return null;
-  }
 
   void saveTraits(String? value) {
     if (value == null || value.isEmpty) {
@@ -193,8 +113,8 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     hintText: 'Weapon Name?',
                   ),
                   initialValue: weapon.name,
-                  validator: nameValidator,
-                  onSaved: saveName,
+                  validator: validator.notEmpty,
+                  onSaved: (v) => weapon.name = v!,
                 ),
                 DropdownButtonFormField(
                   decoration: const InputDecoration(
@@ -204,8 +124,8 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                   ),
                   value: weapon.type,
                   items: _weaponTypeList,
-                  onChanged: saveType,
-                  onSaved: saveType,
+                  onChanged: (v) => weapon.type = v!,
+                  onSaved: (v) => weapon.type = v!,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -218,8 +138,10 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
                   ],
-                  validator: rangeValidator,
-                  onSaved: saveRange,
+                  validator: (v) =>
+                      validator.notEmpty(v) ??
+                      validator.strictlyPositiveNumber(v),
+                  onSaved: (v) => weapon.range = int.parse(v!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -232,23 +154,25 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
                   ],
-                  validator: shotsValidator,
-                  onSaved: saveShots,
+                  validator: (v) =>
+                      validator.notEmpty(v) ??
+                      validator.strictlyPositiveNumber(v),
+                  onSaved: (v) => weapon.shots = int.parse(v!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
                     icon: Icon(Icons.healing),
-                    labelText: "Save:",
-                    hintText: "Negative modifier to target",
+                    labelText: "Impact:",
+                    hintText: "",
                   ),
-                  initialValue: weapon.save.toString(),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(signed: true),
+                  initialValue: weapon.impact.toString(),
+                  keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp('[0-9-]')),
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
-                  validator: saveValidator,
-                  onSaved: saveSave,
+                  validator: (v) =>
+                      validator.notEmpty(v) ?? validator.positiveNumber(v),
+                  onSaved: (v) => weapon.impact = int.parse(v!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -257,7 +181,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     hintText: 'Aim, Heavy',
                   ),
                   initialValue: weapon.traits.join(", "),
-                  validator: traitValidator,
+                  validator: validator.traits,
                   onSaved: saveTraits,
                 ),
                 Padding(

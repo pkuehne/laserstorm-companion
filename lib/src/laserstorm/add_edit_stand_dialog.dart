@@ -15,30 +15,30 @@ class AddEditStandDialog extends StatefulWidget {
   State<AddEditStandDialog> createState() => _AddEditStandDialogState();
 }
 
+final _standTypeList = [
+  for (var type in StandType.values)
+    DropdownMenuItem(
+      value: type,
+      child: Text(type.toString()),
+    ),
+];
+
+final _movementTypeList = [
+  for (var type in MovementType.values)
+    DropdownMenuItem(
+      value: type,
+      child: Text(type.toString()),
+    ),
+];
+
+final _booleanTypeList = [
+  const DropdownMenuItem(value: true, child: Text("Yes")),
+  const DropdownMenuItem(value: false, child: Text("No")),
+];
+
 class _AddEditStandDialogState extends State<AddEditStandDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Stand stand = Stand.empty();
-
-  final _standTypeList = [
-    for (var type in StandType.values)
-      DropdownMenuItem(
-        value: type,
-        child: Text(type.toString()),
-      ),
-  ];
-
-  final _movementTypeList = [
-    for (var type in MovementType.values)
-      DropdownMenuItem(
-        value: type,
-        child: Text(type.toString()),
-      ),
-  ];
-
-  final _booleanTypeList = [
-    const DropdownMenuItem(value: true, child: Text("Yes")),
-    const DropdownMenuItem(value: false, child: Text("No")),
-  ];
 
   String? nameValidator(String? value) {
     if (value == null || value.isEmpty) {

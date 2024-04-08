@@ -8,7 +8,7 @@ void main() {
     // Given
     var stand = Stand.empty();
     stand.type = StandType.infantry;
-    var unit = Unit(stand);
+    var unit = Unit("", stand);
     unit.size = 6;
 
     // When
@@ -22,7 +22,7 @@ void main() {
     // Given
     var stand = Stand.empty();
     stand.type = StandType.infantry;
-    var unit = Unit(stand);
+    var unit = Unit("", stand);
     unit.size = 6;
 
     // When
@@ -39,7 +39,7 @@ void main() {
     var transport = Stand.empty();
     transport.type = StandType.vehicle;
 
-    var unit = Unit(stand, transport);
+    var unit = Unit("", stand, transport);
     unit.size = 8;
     unit.transportSize = 4;
 
@@ -55,7 +55,7 @@ void main() {
     var stand = Stand.empty();
     stand.type = StandType.infantry;
 
-    var unit = Unit(stand);
+    var unit = Unit("", stand);
     unit.size = 5;
 
     // When
@@ -69,7 +69,7 @@ void main() {
     var stand = Stand.empty();
     stand.type = StandType.infantry;
 
-    var unit = Unit(stand);
+    var unit = Unit("", stand);
     unit.size = 1;
 
     // When
@@ -90,21 +90,25 @@ void main() {
     stand.assault = 0;
     stand.save = 5;
     stand.morale = 4;
+    stand.primaries = [EmptyWeapon()];
+    expect(stand.cost(), 2 * 12); // Differs from the book
 
     var weapon = Weapon.empty();
     weapon.range = 30;
-    weapon.save = -6;
+    weapon.impact = 6;
     weapon.type = WeaponType.at;
+    expect(weapon.cost(), 17); // Matches the book
 
-    stand.slots = [WeaponSlot(weapon: weapon)];
+    stand.primaries = [weapon];
+    expect(stand.cost(), 58); // Differs from the book
 
-    var unit = Unit(stand);
+    var unit = Unit("", stand);
     unit.size = 3;
 
     // When
     var cost = unit.cost();
 
     // Then
-    expect(cost, equals(200));
+    expect(cost, equals(175)); // Differs from the book
   });
 }

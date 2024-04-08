@@ -2,6 +2,7 @@ import 'stand.dart';
 
 class Unit {
   int id = 0;
+  String name = "";
   Stand stand;
   int size = 1;
   Stand? transport;
@@ -9,7 +10,7 @@ class Unit {
   bool command = false;
   bool hero = false;
 
-  Unit(this.stand, [this.transport]);
+  Unit(this.name, this.stand, [this.transport]);
 
   double cost() {
     double cost = stand.cost() * size;
@@ -24,7 +25,7 @@ class Unit {
       if (stand.type == StandType.cavalry && size < 4) {
         cost *= 1.1;
       }
-      if (stand.type == StandType.lightVehicle && size < 4) {
+      if (stand.type == StandType.scout && size < 4) {
         cost *= 1.1;
       }
       if (stand.type == StandType.fieldGun && size < 3) {
@@ -51,7 +52,7 @@ class Unit {
       cost *= independentCost;
     }
 
-    cost += 0.5; // Always round up
+    cost += 0.4; // Always round up
     cost = cost.roundToDouble();
 
     // Round to nearest 5

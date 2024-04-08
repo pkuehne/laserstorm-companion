@@ -86,7 +86,7 @@ class WeaponsPage extends StatelessWidget {
                       icon: Icons.social_distance),
                   StatDisplay(
                       stat: "Save",
-                      value: weapon.save.toString(),
+                      value: weapon.impact.toString(),
                       icon: Icons.healing),
                   StatDisplay(
                       stat: "Shots",
@@ -101,21 +101,6 @@ class WeaponsPage extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            trailing: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // IconButton(
-                //   onPressed: () => onPressedEdit(context, index),
-                //   icon: const Icon(Icons.edit),
-                //   tooltip: "Edit",
-                // ),
-                // IconButton(
-                //   onPressed: () => onPressedDelete(context, index),
-                //   icon: const Icon(Icons.delete),
-                //   tooltip: "Delete",
-                // ),
-              ],
             ),
           );
         });
