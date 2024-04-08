@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "689484762717",
+    "project_id": "weasel-games",
+    "storage_bucket": "weasel-games.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689484762717:android:8381ef5be09be38f4707b4",
+        "android_client_info": {
+          "package_name": "com.example.weasel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbGmSZUtsyeSjjC1hSUN8wj-glXkoGmp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
