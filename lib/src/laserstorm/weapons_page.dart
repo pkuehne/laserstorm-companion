@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weasel/src/laserstorm/laser_storm_home_page.dart';
+import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
 import '../app_states.dart';
 import 'add_edit_weapon_dialog.dart';
 import 'weapon.dart';
@@ -18,6 +18,8 @@ void showAddEditWeaponDialog(BuildContext context) {
 }
 
 class WeaponsPage extends StatelessWidget {
+  static const String routeName = "/laserstorm/weapons/";
+
   const WeaponsPage({super.key});
 
   /// Edit an existing Weapon using the same dialog as the Add

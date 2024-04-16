@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/add_edit_stand_dialog.dart';
 import 'package:weasel/src/laserstorm/add_edit_unit_page.dart';
 import 'package:weasel/src/laserstorm/stands_page.dart';
 import 'package:weasel/src/laserstorm/units_page.dart';
@@ -23,10 +24,12 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
           useMaterial3: true,
         ),
-        initialRoute: "/LaserStorm/Weapons/",
+        initialRoute: "/laserstorm/weapons/",
         routes: {
-          '/LaserStorm/Weapons/': (context) => const WeaponsPage(),
-          '/LaserStorm/Stands/': (context) => const StandsPage(),
+          WeaponsPage.routeName: (context) => const WeaponsPage(),
+          StandsPage.routeName: (context) => const StandsPage(),
+          AddStandPage.routeName: (context) => const AddStandPage(),
+          EditStandPage.routeName: (context) => const EditStandPage(),
           UnitsPage.routeName: (context) => const UnitsPage(),
           AddUnitPage.routeName: (context) => const AddUnitPage(),
           EditUnitPage.routeName: (context) => const EditUnitPage(),

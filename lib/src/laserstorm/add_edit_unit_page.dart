@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:weasel/src/laserstorm/laser_storm_home_page.dart';
+import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
 import 'package:weasel/src/laserstorm/stand.dart';
 import 'package:weasel/src/laserstorm/unit.dart';
 import 'package:weasel/src/app_states.dart';
@@ -23,7 +23,7 @@ class AddUnitPage extends StatelessWidget {
     return UnitForm(
       unit: Unit.empty(),
       title: "Add Unit",
-      snacktext: "Added",
+      snackText: "Added",
     );
   }
 }
@@ -45,7 +45,7 @@ class EditUnitPage extends StatelessWidget {
     return UnitForm(
       unit: Unit.clone(appState.getUnit(id!)),
       title: "Edit Unit",
-      snacktext: "Updated",
+      snackText: "Updated",
     );
   }
 }
@@ -53,13 +53,13 @@ class EditUnitPage extends StatelessWidget {
 class UnitForm extends StatefulWidget {
   final Unit unit;
   final String title;
-  final String snacktext;
+  final String snackText;
 
   const UnitForm({
     super.key,
     required this.unit,
     required this.title,
-    required this.snacktext,
+    required this.snackText,
   });
 
   @override
@@ -95,7 +95,7 @@ class _UnitFormState extends State<UnitForm> {
     }
     appState.setUnit(widget.unit);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("${widget.snacktext} ${widget.unit.name}")),
+      SnackBar(content: Text("${widget.snackText} ${widget.unit.name}")),
     );
     goBack(context);
   }

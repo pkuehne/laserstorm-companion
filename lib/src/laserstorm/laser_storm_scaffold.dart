@@ -1,6 +1,8 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:weasel/src/laserstorm/stands_page.dart';
 import 'package:weasel/src/laserstorm/units_page.dart';
+import 'package:weasel/src/laserstorm/weapons_page.dart';
 
 class DrawerItem {
   String title;
@@ -10,8 +12,8 @@ class DrawerItem {
 }
 
 List<DrawerItem> drawers = [
-  DrawerItem("Weapons", "/LaserStorm/Weapons/"),
-  DrawerItem("Stands", "/LaserStorm/Stands/"),
+  DrawerItem("Weapons", WeaponsPage.routeName),
+  DrawerItem("Stands", StandsPage.routeName),
   DrawerItem("Units", UnitsPage.routeName),
   DrawerItem("Task Forces", "/"),
 ];

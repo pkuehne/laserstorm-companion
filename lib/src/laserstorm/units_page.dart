@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weasel/src/laserstorm/add_edit_unit_page.dart';
-import 'package:weasel/src/laserstorm/laser_storm_home_page.dart';
+import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
 import '../app_states.dart';
 import 'stand.dart';
 import 'common_widgets.dart';
@@ -26,7 +26,7 @@ class UnitsPage extends StatelessWidget {
   void onPressedDelete(BuildContext context, int index) {
     var appState = Provider.of<AppState>(context, listen: false);
     var unit = appState.units[index]; // Todo: Delete Unit
-    appState.removeStand(unit.id);
+    appState.removeUnit(unit.id);
   }
 
   @override

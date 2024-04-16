@@ -1,18 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
 import '../app_states.dart';
 import 'stand.dart';
 
-class AddEditStandDialog extends StatefulWidget {
+/// Holds stand id argument for EditUnitPage
+class StandId {
   final int? id;
-  const AddEditStandDialog({
-    this.id,
+  StandId(this.id);
+}
+
+class AddStandPage extends StatelessWidget {
+  const AddStandPage({super.key});
+
+  static const routeName = '/laserstorm/stand/add';
+
+  @override
+  Widget build(BuildContext context) {
+    return StandForm(
+      stand: Stand.empty(),
+      title: "Add Unit",
+      snackText: "Added",
+    );
+  }
+}
+
+class EditStandPage extends StatelessWidget {
+  const EditStandPage({super.key});
+
+  static const routeName = '/laserstorm/stand/edit';
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+    final args = ModalRoute.of(context)?.settings.arguments as StandId?;
+    final id = args?.id;
+    if (id == null || !appState.hasUnit(id)) {
+      Navigator.of(context).pop();
+    }
+
+    return StandForm(
+      stand: Stand.clone(appState.getStand(id!)),
+      title: "Edit Unit",
+      snackText: "Updated",
+    );
+  }
+}
+
+class StandForm extends StatefulWidget {
+  final Stand stand;
+  final String title;
+  final String snackText;
+
+  const StandForm({
     super.key,
+    required this.stand,
+    required this.title,
+    required this.snackText,
   });
 
   @override
-  State<AddEditStandDialog> createState() => _AddEditStandDialogState();
+  State<StandForm> createState() => _StandFormState();
 }
 
 final _standTypeList = [
@@ -36,7 +85,7 @@ final _booleanTypeList = [
   const DropdownMenuItem(value: false, child: Text("No")),
 ];
 
-class _AddEditStandDialogState extends State<AddEditStandDialog> {
+class _StandFormState extends State<StandForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Stand stand = Stand.empty();
 
@@ -175,7 +224,7 @@ class _AddEditStandDialogState extends State<AddEditStandDialog> {
     Navigator.of(context).pop();
   }
 
-  void submitDialog(BuildContext context) {
+  void submitChanges(BuildContext context) {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -205,173 +254,175 @@ class _AddEditStandDialogState extends State<AddEditStandDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    if (widget.id != null && appState.hasStand(widget.id!)) {
-      // Load the stand
-      stand = appState.getStand(widget.id!);
-    }
+    // var appState = Provider.of<AppState>(context, listen: false);
+    // var weaponList = appState.weapons.map<DropdownMenuItem<int>>((Weapon w) {
+    //   return DropdownMenuItem<int>(
+    //     value: w.id,
+    //     child: Text(w.name),
+    //   );
+    // }).toList();
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Form(
-            key: _formKey,
+    return LaserStormScaffold(
+      title: widget.title,
+      body: SingleChildScrollView(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints.loose(const Size(400, double.infinity)),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Name:',
-                    hintText: 'Stand Name?',
-                  ),
-                  initialValue: stand.name,
-                  validator: nameValidator,
-                  onSaved: saveName,
-                ),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Stand Type",
-                    hintText: "Type of stand",
-                  ),
-                  value: stand.type,
-                  items: _standTypeList,
-                  onChanged: saveType,
-                  onSaved: saveType,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Capacity:',
-                    hintText: 'Transport capacity?',
-                  ),
-                  initialValue: stand.transports.toString(),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  onSaved: (v) => stand.transports = int.parse(v!),
-                ),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Movement Type",
-                    hintText: "Type of movement",
-                  ),
-                  value: stand.movement,
-                  items: _movementTypeList,
-                  onChanged: saveMovement,
-                  onSaved: saveMovement,
-                  validator: movementValidator,
-                ),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Minimum Move",
-                    hintText: "Vehicle has minimum move distance",
-                  ),
-                  value: stand.hasMinimumMove,
-                  items: _booleanTypeList,
-                  onChanged: saveMinimumMove,
-                  onSaved: saveMinimumMove,
-                  validator: minimumMoveValidator,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.social_distance),
-                    labelText: "Aim:",
-                    hintText: "Aim Range in inches",
-                  ),
-                  initialValue: stand.aim.toString(),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  validator: rangeValidator,
-                  onSaved: saveAim,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.multiple_stop),
-                    labelText: "Speed:",
-                    hintText: "How fast this stand moves",
-                  ),
-                  initialValue: stand.speed.toString(),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  validator: shotsValidator,
-                  onSaved: saveSpeed,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.healing),
-                    labelText: "Save:",
-                    hintText: "Base Save number",
-                  ),
-                  initialValue: stand.save.toString(),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(signed: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  validator: shotsValidator,
-                  onSaved: saveSave,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.list),
-                    labelText: 'Traits:',
-                    hintText: 'Aim, Heavy',
-                  ),
-                  initialValue: stand.traits.join(", "),
-                  validator: traitValidator,
-                  onSaved: saveTraits,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("Cost: ",
-                          style: Theme.of(context).textTheme.titleLarge),
-                      Text(stand.cost().toInt().toString(),
-                          style: Theme.of(context).textTheme.titleLarge),
-                      IconButton(
-                        onPressed: recalculateCost,
-                        icon: const Icon(Icons.calculate),
-                        tooltip: "Recalculate Cost",
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Name:',
+                          hintText: 'Stand Name?',
+                        ),
+                        initialValue: stand.name,
+                        validator: nameValidator,
+                        onSaved: saveName,
+                      ),
+                      DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          labelText: "Stand Type",
+                          hintText: "Type of stand",
+                        ),
+                        value: stand.type,
+                        items: _standTypeList,
+                        onChanged: saveType,
+                        onSaved: saveType,
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Capacity:',
+                          hintText: 'Transport capacity?',
+                        ),
+                        initialValue: stand.transports.toString(),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        onSaved: (v) => stand.transports = int.parse(v!),
+                      ),
+                      DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          labelText: "Movement Type",
+                          hintText: "Type of movement",
+                        ),
+                        value: stand.movement,
+                        items: _movementTypeList,
+                        onChanged: saveMovement,
+                        onSaved: saveMovement,
+                        validator: movementValidator,
+                      ),
+                      DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          labelText: "Minimum Move",
+                          hintText: "Vehicle has minimum move distance",
+                        ),
+                        value: stand.hasMinimumMove,
+                        items: _booleanTypeList,
+                        onChanged: saveMinimumMove,
+                        onSaved: saveMinimumMove,
+                        validator: minimumMoveValidator,
+                      ),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Aim:",
+                                hintText: "Aim Range in inches",
+                              ),
+                              initialValue: stand.aim.toString(),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: rangeValidator,
+                              onSaved: saveAim,
+                            ),
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Speed:",
+                                hintText: "How fast this stand moves",
+                              ),
+                              initialValue: stand.speed.toString(),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: shotsValidator,
+                              onSaved: saveSpeed,
+                            ),
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Save:",
+                                hintText: "Base Save number",
+                              ),
+                              initialValue: stand.save.toString(),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: true),
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: shotsValidator,
+                              onSaved: saveSave,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Traits:',
+                          hintText: 'Aim, Heavy',
+                        ),
+                        initialValue: stand.traits.join(", "),
+                        validator: traitValidator,
+                        onSaved: saveTraits,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("Cost: ",
+                                style: Theme.of(context).textTheme.titleLarge),
+                            Text(stand.cost().toInt().toString(),
+                                style: Theme.of(context).textTheme.titleLarge),
+                            IconButton(
+                              onPressed: recalculateCost,
+                              icon: const Icon(Icons.calculate),
+                              tooltip: "Recalculate Cost",
+                            )
+                          ],
+                        ),
                       )
                     ],
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () => submitChanges(context),
+                    child: const Text('Ok'),
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Visibility(
-                visible: stand.id != 0,
-                child: IconButton(
-                  onPressed: () => deleteStand(context),
-                  icon: const Icon(Icons.delete),
-                  tooltip: "Delete this stand",
-                ),
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () => closeDialog(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () => submitDialog(context),
-                child: const Text('Ok'),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -67,7 +67,7 @@ class Stand {
   int save = 24;
   int morale = 6;
   List<Weapon> primaries = [];
-  List<Weapon> secondaries = [];
+  List<Weapon> selectables = [];
   List<String> traits = [];
 
   Stand.empty();
@@ -82,12 +82,26 @@ class Stand {
     this.save = 24,
     this.morale = 6,
     this.primaries = const [],
-    this.secondaries = const [],
+    this.selectables = const [],
     this.traits = const [],
   });
-
+  Stand.clone(Stand o)
+      : this(
+          o.id,
+          o.name,
+          type: o.type,
+          speed: o.speed,
+          transports: o.transports,
+          aim: o.aim,
+          assault: o.assault,
+          save: o.save,
+          morale: o.morale,
+          primaries: o.primaries,
+          selectables: o.selectables,
+          traits: o.traits,
+        );
   int weaponSlots() {
-    return primaries.length + secondaries.length;
+    return primaries.length + selectables.length;
   }
 
   double speedCost() {
@@ -278,7 +292,7 @@ class Stand {
     for (var weapon in primaries) {
       cost += weapon.cost();
     }
-    for (var weapon in secondaries) {
+    for (var weapon in selectables) {
       cost += weapon.cost() * 0.8;
     }
     return cost;

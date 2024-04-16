@@ -538,7 +538,7 @@ void main() {
     stand.aim = 4;
     var weapon = MockWeapon();
     when(weapon.cost()).thenReturn(20.0);
-    stand.secondaries = [weapon];
+    stand.selectables = [weapon];
 
     // When
     var cost = stand.weaponCost();
