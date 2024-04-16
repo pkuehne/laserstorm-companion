@@ -8,7 +8,7 @@ void main() {
     // Given
     var stand = Stand.empty();
     stand.type = StandType.infantry;
-    var unit = Unit("", stand);
+    var unit = Unit(1, "", stand);
     unit.size = 6;
 
     // When
@@ -22,7 +22,7 @@ void main() {
     // Given
     var stand = Stand.empty();
     stand.type = StandType.infantry;
-    var unit = Unit("", stand);
+    var unit = Unit(1, "", stand);
     unit.size = 6;
 
     // When
@@ -39,7 +39,7 @@ void main() {
     var transport = Stand.empty();
     transport.type = StandType.vehicle;
 
-    var unit = Unit("", stand, transport);
+    var unit = Unit(1, "", stand, transport: transport);
     unit.size = 8;
     unit.transportSize = 4;
 
@@ -55,7 +55,7 @@ void main() {
     var stand = Stand.empty();
     stand.type = StandType.infantry;
 
-    var unit = Unit("", stand);
+    var unit = Unit(1, "", stand);
     unit.size = 5;
 
     // When
@@ -69,7 +69,7 @@ void main() {
     var stand = Stand.empty();
     stand.type = StandType.infantry;
 
-    var unit = Unit("", stand);
+    var unit = Unit(1, "", stand);
     unit.size = 1;
 
     // When
@@ -102,7 +102,7 @@ void main() {
     stand.primaries = [weapon];
     expect(stand.cost(), 58); // Differs from the book
 
-    var unit = Unit("", stand);
+    var unit = Unit(1, "", stand);
     unit.size = 3;
 
     // When

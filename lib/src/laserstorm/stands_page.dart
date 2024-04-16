@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/laser_storm_home_page.dart';
 import '../app_states.dart';
 import 'add_edit_stand_dialog.dart';
 import 'stand.dart';
@@ -44,7 +45,14 @@ class StandsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<AppState>();
 
-    return ListView.builder(
+    return LaserStormScaffold(
+      title: "Stands",
+      addButton: FloatingActionButton(
+        onPressed: () => showAddEditStandDialog(context),
+        tooltip: 'Add Stand',
+        child: const Icon(Icons.add),
+      ),
+      body: ListView.builder(
         itemCount: appState.stands.length,
         itemBuilder: (BuildContext _, int index) {
           final stand = appState.stands[index];
@@ -103,6 +111,8 @@ class StandsPage extends StatelessWidget {
               ),
             ),
           );
-        });
+        },
+      ),
+    );
   }
 }

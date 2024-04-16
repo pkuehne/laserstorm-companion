@@ -72,18 +72,19 @@ class Stand {
 
   Stand.empty();
   Stand(
-      this.id,
-      this.name,
-      this.type,
-      this.speed,
-      this.transports,
-      this.aim,
-      this.assault,
-      this.save,
-      this.morale,
-      this.primaries,
-      this.secondaries,
-      this.traits);
+    this.id,
+    this.name, {
+    this.type = StandType.infantry,
+    this.speed = 4,
+    this.transports = 0,
+    this.aim = 5,
+    this.assault = 0,
+    this.save = 24,
+    this.morale = 6,
+    this.primaries = const [],
+    this.secondaries = const [],
+    this.traits = const [],
+  });
 
   int weaponSlots() {
     return primaries.length + secondaries.length;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/laser_storm_home_page.dart';
 import '../app_states.dart';
 import 'add_edit_weapon_dialog.dart';
 import 'weapon.dart';
@@ -52,7 +53,14 @@ class WeaponsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<AppState>();
 
-    return ListView.builder(
+    return LaserStormScaffold(
+      title: "Weapons",
+      addButton: FloatingActionButton(
+        onPressed: () => showAddEditWeaponDialog(context),
+        tooltip: 'Add Weapon',
+        child: const Icon(Icons.add),
+      ),
+      body: ListView.builder(
         itemCount: appState.weaponCount(),
         itemBuilder: (BuildContext _, int index) {
           final weapon = appState.weapons[index];
@@ -103,6 +111,8 @@ class WeaponsPage extends StatelessWidget {
               ),
             ),
           );
-        });
+        },
+      ),
+    );
   }
 }

@@ -222,7 +222,6 @@ class _AddEditStandDialogState extends State<AddEditStandDialog> {
               children: [
                 TextFormField(
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.abc),
                     labelText: 'Name:',
                     hintText: 'Stand Name?',
                   ),
@@ -232,7 +231,6 @@ class _AddEditStandDialogState extends State<AddEditStandDialog> {
                 ),
                 DropdownButtonFormField(
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.all_out),
                     labelText: "Stand Type",
                     hintText: "Type of stand",
                   ),
@@ -241,9 +239,20 @@ class _AddEditStandDialogState extends State<AddEditStandDialog> {
                   onChanged: saveType,
                   onSaved: saveType,
                 ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Capacity:',
+                    hintText: 'Transport capacity?',
+                  ),
+                  initialValue: stand.transports.toString(),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onSaved: (v) => stand.transports = int.parse(v!),
+                ),
                 DropdownButtonFormField(
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.all_out),
                     labelText: "Movement Type",
                     hintText: "Type of movement",
                   ),
@@ -255,7 +264,6 @@ class _AddEditStandDialogState extends State<AddEditStandDialog> {
                 ),
                 DropdownButtonFormField(
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.all_out),
                     labelText: "Minimum Move",
                     hintText: "Vehicle has minimum move distance",
                   ),
@@ -297,15 +305,15 @@ class _AddEditStandDialogState extends State<AddEditStandDialog> {
                   decoration: const InputDecoration(
                     icon: Icon(Icons.healing),
                     labelText: "Save:",
-                    hintText: "Negative modifier to target",
+                    hintText: "Base Save number",
                   ),
                   initialValue: stand.save.toString(),
                   keyboardType:
                       const TextInputType.numberWithOptions(signed: true),
                   inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp('[0-9-]')),
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
-                  validator: saveValidator,
+                  validator: shotsValidator,
                   onSaved: saveSave,
                 ),
                 TextFormField(

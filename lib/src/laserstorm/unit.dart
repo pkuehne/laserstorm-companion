@@ -10,7 +10,24 @@ class Unit {
   bool command = false;
   bool hero = false;
 
-  Unit(this.name, this.stand, [this.transport]);
+  Unit(
+    this.id,
+    this.name,
+    this.stand, {
+    this.transport,
+    this.size = 1,
+    this.transportSize = 0,
+    this.command = false,
+    this.hero = false,
+  });
+  Unit.empty() : stand = Stand.empty();
+  Unit.clone(Unit original)
+      : this(original.id, original.name, original.stand,
+            size: original.size,
+            transport: original.transport,
+            transportSize: original.transportSize,
+            command: original.command,
+            hero: original.hero);
 
   double cost() {
     double cost = stand.cost() * size;

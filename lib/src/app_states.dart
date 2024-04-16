@@ -11,15 +11,21 @@ class AppState extends ChangeNotifier {
     3: Weapon(3, "Machine Gun", WeaponType.ai, 20, 2, 0, []),
   };
   final _stands = {
-    1: Stand(1, "Infantry Fire-team", StandType.infantry, 4, 0, 5, 0, 0, 6, [],
-        [], []),
+    1: Stand(1, "Infantry Fire-team"),
+    2: Stand(
+      2,
+      "Infantry Fighting Vehicle",
+      type: StandType.vehicle,
+      transports: 6,
+    ),
   };
 
   final _units = {
     1: Unit(
-        "Marine Company",
-        Stand(1, "Infantry Fire-team", StandType.infantry, 4, 0, 5, 0, 0, 6, [],
-            [], [])),
+      1,
+      "Marine Company",
+      Stand(1, "Infantry Fire-team"),
+    ),
   };
 
   /// Creates or updates the given [Weapon] based on its id field

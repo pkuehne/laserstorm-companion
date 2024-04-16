@@ -1,4 +1,4 @@
-/// This library contains function to validate a weapon
+/// This library contains functions to validate form fields
 library;
 
 /// Validates a weapon name

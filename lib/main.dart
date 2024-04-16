@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:weasel/src/laserstorm/add_edit_unit_page.dart';
+import 'package:weasel/src/laserstorm/stands_page.dart';
+import 'package:weasel/src/laserstorm/units_page.dart';
+import 'package:weasel/src/laserstorm/weapons_page.dart';
 import 'src/app_states.dart';
-import 'src/laserstorm/laser_storm_home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +13,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -22,12 +23,15 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
           useMaterial3: true,
         ),
-        home: const LaserStormHomePage(),
-        // routes: {
-        //   '/': (context) => HomeScreen(),
-        //   '/second': (context) => SecondScreen(),
-        //   '/third': (context) => ThirdScreen(),
-        // },
+        initialRoute: "/LaserStorm/Weapons/",
+        routes: {
+          '/LaserStorm/Weapons/': (context) => const WeaponsPage(),
+          '/LaserStorm/Stands/': (context) => const StandsPage(),
+          UnitsPage.routeName: (context) => const UnitsPage(),
+          AddUnitPage.routeName: (context) => const AddUnitPage(),
+          EditUnitPage.routeName: (context) => const EditUnitPage(),
+          '/': (context) => const Placeholder(),
+        },
       ),
     );
   }
