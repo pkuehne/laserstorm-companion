@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
 import '../app_states.dart';
 import 'weapon.dart';
 import 'validators.dart' as validator;
@@ -134,124 +135,133 @@ class _WeaponFormState extends State<WeaponForm> {
   Widget build(BuildContext context) {
     // var appState = Provider.of<AppState>(context, listen: false);
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Form(
-            key: _formKey,
+    return LaserStormScaffold(
+      title: widget.title,
+      body: SingleChildScrollView(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints.loose(const Size(400, double.infinity)),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.abc),
-                    labelText: 'Name:',
-                    hintText: 'Weapon Name?',
-                  ),
-                  initialValue: widget.weapon.name,
-                  validator: validator.notEmpty,
-                  onSaved: (v) => widget.weapon.name = v!,
-                ),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.all_out),
-                    labelText: "Weapon Type",
-                    hintText: "Type of weapon",
-                  ),
-                  value: widget.weapon.type,
-                  items: _weaponTypeList,
-                  onChanged: (v) => widget.weapon.type = v!,
-                  onSaved: (v) => widget.weapon.type = v!,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.social_distance),
-                    labelText: "Range:",
-                    hintText: "Weapon Range in inches",
-                  ),
-                  initialValue: widget.weapon.range.toString(),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  validator: (v) =>
-                      validator.notEmpty(v) ??
-                      validator.strictlyPositiveNumber(v),
-                  onSaved: (v) => widget.weapon.range = int.parse(v!),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.multiple_stop),
-                    labelText: "Shots:",
-                    hintText: "Dice per weapon",
-                  ),
-                  initialValue: widget.weapon.shots.toString(),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  validator: (v) =>
-                      validator.notEmpty(v) ??
-                      validator.strictlyPositiveNumber(v),
-                  onSaved: (v) => widget.weapon.shots = int.parse(v!),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.healing),
-                    labelText: "Impact:",
-                    hintText: "",
-                  ),
-                  initialValue: widget.weapon.impact.toString(),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  validator: (v) =>
-                      validator.notEmpty(v) ?? validator.positiveNumber(v),
-                  onSaved: (v) => widget.weapon.impact = int.parse(v!),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.list),
-                    labelText: 'Traits:',
-                    hintText: 'Aim, Heavy',
-                  ),
-                  initialValue: widget.weapon.traits.join(", "),
-                  validator: validator.traits,
-                  onSaved: saveTraits,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("Cost: ",
-                          style: Theme.of(context).textTheme.titleLarge),
-                      Text(widget.weapon.cost().toInt().toString(),
-                          style: Theme.of(context).textTheme.titleLarge),
-                      IconButton(
-                        onPressed: recalculateCost,
-                        icon: const Icon(Icons.calculate),
-                        tooltip: "Recalculate Cost",
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.abc),
+                          labelText: 'Name:',
+                          hintText: 'Weapon Name?',
+                        ),
+                        initialValue: widget.weapon.name,
+                        validator: validator.notEmpty,
+                        onSaved: (v) => widget.weapon.name = v!,
+                      ),
+                      DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.all_out),
+                          labelText: "Weapon Type",
+                          hintText: "Type of weapon",
+                        ),
+                        value: widget.weapon.type,
+                        items: _weaponTypeList,
+                        onChanged: (v) => widget.weapon.type = v!,
+                        onSaved: (v) => widget.weapon.type = v!,
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.social_distance),
+                          labelText: "Range:",
+                          hintText: "Weapon Range in inches",
+                        ),
+                        initialValue: widget.weapon.range.toString(),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (v) =>
+                            validator.notEmpty(v) ??
+                            validator.strictlyPositiveNumber(v),
+                        onSaved: (v) => widget.weapon.range = int.parse(v!),
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.multiple_stop),
+                          labelText: "Shots:",
+                          hintText: "Dice per weapon",
+                        ),
+                        initialValue: widget.weapon.shots.toString(),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (v) =>
+                            validator.notEmpty(v) ??
+                            validator.strictlyPositiveNumber(v),
+                        onSaved: (v) => widget.weapon.shots = int.parse(v!),
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.healing),
+                          labelText: "Impact:",
+                          hintText: "",
+                        ),
+                        initialValue: widget.weapon.impact.toString(),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (v) =>
+                            validator.notEmpty(v) ??
+                            validator.positiveNumber(v),
+                        onSaved: (v) => widget.weapon.impact = int.parse(v!),
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.list),
+                          labelText: 'Traits:',
+                          hintText: 'Aim, Heavy',
+                        ),
+                        initialValue: widget.weapon.traits.join(", "),
+                        validator: validator.traits,
+                        onSaved: saveTraits,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("Cost: ",
+                                style: Theme.of(context).textTheme.titleLarge),
+                            Text(widget.weapon.cost().toInt().toString(),
+                                style: Theme.of(context).textTheme.titleLarge),
+                            IconButton(
+                              onPressed: recalculateCost,
+                              icon: const Icon(Icons.calculate),
+                              tooltip: "Recalculate Cost",
+                            )
+                          ],
+                        ),
                       )
                     ],
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () => submitChanges(context),
+                    child: const Text('Ok'),
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: () => submitChanges(context),
-              child: const Text('Ok'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

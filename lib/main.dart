@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weasel/src/laserstorm/add_edit_stand_dialog.dart';
 import 'package:weasel/src/laserstorm/add_edit_unit_page.dart';
+import 'package:weasel/src/laserstorm/add_edit_weapon_dialog.dart';
 import 'package:weasel/src/laserstorm/stands_page.dart';
 import 'package:weasel/src/laserstorm/units_page.dart';
 import 'package:weasel/src/laserstorm/weapons_page.dart';
@@ -27,6 +28,8 @@ class MyApp extends StatelessWidget {
         initialRoute: "/laserstorm/weapons/",
         routes: {
           WeaponsPage.routeName: (context) => const WeaponsPage(),
+          AddWeaponPage.routeName: (context) => const AddWeaponPage(),
+          EditWeaponPage.routeName: (context) => const EditWeaponPage(),
           StandsPage.routeName: (context) => const StandsPage(),
           AddStandPage.routeName: (context) => const AddStandPage(),
           EditStandPage.routeName: (context) => const EditStandPage(),
