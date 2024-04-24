@@ -69,17 +69,6 @@ class UnitForm extends StatefulWidget {
 class _UnitFormState extends State<UnitForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void deleteUnit(BuildContext context) {
-    final appState = Provider.of<AppState>(context, listen: false);
-    final snackText = "Removed ${widget.unit.name}";
-
-    appState.removeUnit(widget.unit.id);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(snackText)),
-    );
-    goBack(context);
-  }
-
   void goBack(BuildContext context) {
     Navigator.of(context).pop();
   }
@@ -90,9 +79,7 @@ class _UnitFormState extends State<UnitForm> {
     }
     _formKey.currentState!.save(); // Store current values
     final appState = Provider.of<AppState>(context, listen: false);
-    if (widget.unit.id == 0) {
-      widget.unit.id = UniqueKey().hashCode;
-    }
+    widget.unit.ensureId();
     appState.setUnit(widget.unit);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("${widget.snackText} ${widget.unit.name}")),

@@ -1,8 +1,8 @@
+import 'package:weasel/src/laserstorm/item.dart';
+
 import 'stand.dart';
 
-class Unit {
-  int id = 0;
-  String name = "";
+class Unit extends Item {
   Stand stand;
   int size = 1;
   Stand? transport;
@@ -10,25 +10,31 @@ class Unit {
   bool command = false;
   bool hero = false;
 
-  Unit(
-    this.id,
-    this.name,
-    this.stand, {
+  Unit({
+    super.id = 0,
+    super.name = "",
+    required this.stand,
     this.transport,
     this.size = 1,
     this.transportSize = 0,
     this.command = false,
     this.hero = false,
   });
-  Unit.empty() : stand = Stand.empty();
+  Unit.empty()
+      : stand = Stand.empty(),
+        super(name: "");
   Unit.clone(Unit original)
-      : this(original.id, original.name, original.stand,
+      : this(
+            id: original.id,
+            name: original.name,
+            stand: original.stand,
             size: original.size,
             transport: original.transport,
             transportSize: original.transportSize,
             command: original.command,
             hero: original.hero);
 
+  @override
   double cost() {
     double cost = stand.cost() * size;
     if (transport != null) {

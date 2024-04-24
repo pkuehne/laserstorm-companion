@@ -1,3 +1,5 @@
+import 'package:weasel/src/laserstorm/item.dart';
+
 import 'weapon.dart';
 
 enum StandType {
@@ -42,21 +44,7 @@ enum MovementType {
   }
 }
 
-// enum WeaponSlotType {
-//   primary,
-//   secondary,
-// }
-
-// class WeaponSlot {
-//   Weapon weapon;
-//   WeaponSlotType type;
-
-//   WeaponSlot({required this.weapon, this.type = WeaponSlotType.primary});
-// }
-
-class Stand {
-  int id = 0;
-  String name = "";
+class Stand extends Item {
   StandType type = StandType.infantry;
   MovementType movement = MovementType.wheel;
   bool hasMinimumMove = false;
@@ -70,10 +58,10 @@ class Stand {
   List<Weapon> selectables = [];
   List<String> traits = [];
 
-  Stand.empty();
-  Stand(
-    this.id,
-    this.name, {
+  Stand.empty() : super(name: "");
+  Stand({
+    super.id = 0,
+    super.name = "",
     this.type = StandType.infantry,
     this.speed = 4,
     this.transports = 0,
@@ -87,8 +75,8 @@ class Stand {
   });
   Stand.clone(Stand o)
       : this(
-          o.id,
-          o.name,
+          id: o.id,
+          name: o.name,
           type: o.type,
           speed: o.speed,
           transports: o.transports,
@@ -298,6 +286,7 @@ class Stand {
     return cost;
   }
 
+  @override
   double cost() {
     double cost = 0.0;
 

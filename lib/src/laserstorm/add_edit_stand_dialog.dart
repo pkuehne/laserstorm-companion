@@ -209,18 +209,7 @@ class _StandFormState extends State<StandForm> {
     stand.traits = traits.map((e) => e.trim()).toList();
   }
 
-  void deleteStand(BuildContext context) {
-    final appState = Provider.of<AppState>(context, listen: false);
-    final snackText = "Removed ${stand.name}";
-
-    appState.removeStand(stand.id);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(snackText)),
-    );
-    closeDialog(context);
-  }
-
-  void closeDialog(BuildContext context) {
+  void goBack(BuildContext context) {
     Navigator.of(context).pop();
   }
 
@@ -230,18 +219,12 @@ class _StandFormState extends State<StandForm> {
     }
     _formKey.currentState!.save(); // Store current values
     final appState = Provider.of<AppState>(context, listen: false);
-    String snackText = "";
-    if (stand.id == 0) {
-      stand.id = UniqueKey().hashCode;
-      snackText = "Added new stand ${stand.name}";
-    } else {
-      snackText = "Updated stand ${stand.name}";
-    }
-    appState.setStand(stand);
+    widget.stand.ensureId();
+    appState.setStand(widget.stand);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(snackText)),
+      SnackBar(content: Text("${widget.snackText} ${widget.stand.name}")),
     );
-    closeDialog(context);
+    goBack(context);
   }
 
   void recalculateCost() {

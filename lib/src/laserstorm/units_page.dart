@@ -48,7 +48,7 @@ class UnitsPage extends StatelessWidget {
         children: [
           Flexible(
             child: ListView.builder(
-              itemCount: appState.units.length, // Todo: Units
+              itemCount: appState.units.length,
               itemBuilder: (BuildContext _, int index) {
                 final unit = appState.units[index];
                 final icon = switch (unit.stand.type) {

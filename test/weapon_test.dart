@@ -178,7 +178,9 @@ void main() {
 
   test('Check pre-build costs', () {
     expect(
-        Weapon(1, "Small arms",
+        Weapon(
+            id: 1,
+            name: "Small arms",
             type: WeaponType.ai,
             range: 20,
             shots: 1,
@@ -186,14 +188,19 @@ void main() {
             traits: []).cost(),
         equals(2));
     expect(
-        Weapon(2, "Buzzbombs",
-                type: WeaponType.at, range: 10, shots: 1, impact: 3)
+        Weapon(
+                id: 2,
+                name: "Buzzbombs",
+                type: WeaponType.at,
+                range: 10,
+                shots: 1,
+                impact: 3)
             .cost(),
         equals(6));
     expect(
         Weapon(
-          3,
-          "Machine gun",
+          id: 3,
+          name: "Machine gun",
           type: WeaponType.ai,
           range: 20,
           shots: 2,
@@ -202,8 +209,8 @@ void main() {
         equals(3)); // TODO: Differs from the rule book
     expect(
         Weapon(
-          4,
-          "Gauss rifle",
+          id: 4,
+          name: "Gauss rifle",
           type: WeaponType.gp,
           range: 20,
           shots: 1,
@@ -212,8 +219,8 @@ void main() {
         equals(6));
     expect(
         Weapon(
-          5,
-          "Fusion gun",
+          id: 5,
+          name: "Fusion gun",
           type: WeaponType.at,
           range: 10,
           shots: 1,
@@ -222,8 +229,8 @@ void main() {
         equals(8));
     expect(
         Weapon(
-          6,
-          "Plasma rifle",
+          id: 6,
+          name: "Plasma rifle",
           type: WeaponType.gp,
           range: 10,
           shots: 1,
@@ -231,7 +238,9 @@ void main() {
         ).cost(),
         equals(6));
     expect(
-        Weapon(7, "Infantry laser",
+        Weapon(
+            id: 7,
+            name: "Infantry laser",
             type: WeaponType.at,
             range: 40,
             shots: 1,

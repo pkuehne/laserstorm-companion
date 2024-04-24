@@ -1,27 +1,31 @@
+import 'package:weasel/src/laserstorm/item.dart';
+
 enum WeaponType {
   gp,
   ai,
   at,
 }
 
-class Weapon {
-  int id = 0;
-  String name = "";
+class Weapon extends Item {
   WeaponType type = WeaponType.ai;
   int range = 10;
   int impact = 0;
   int shots = 1;
   List<String> traits = [];
 
-  Weapon.empty();
-  Weapon(this.id, this.name,
-      {this.type = WeaponType.ai,
+  Weapon.empty() : super(name: "");
+  Weapon(
+      {super.id = 0,
+      super.name = "",
+      this.type = WeaponType.ai,
       this.range = 10,
       this.shots = 1,
       this.impact = 0,
       this.traits = const []});
   Weapon.clone(Weapon o)
-      : this(o.id, o.name,
+      : this(
+            id: o.id,
+            name: o.name,
             type: o.type,
             range: o.range,
             shots: o.shots,
@@ -86,6 +90,7 @@ class Weapon {
     return cost;
   }
 
+  @override
   double cost() {
     double cost = 0.0;
     cost += rangeCost();

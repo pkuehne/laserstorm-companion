@@ -113,12 +113,10 @@ class _WeaponFormState extends State<WeaponForm> {
     }
     _formKey.currentState!.save(); // Store current values
     final appState = Provider.of<AppState>(context, listen: false);
-    if (widget.weapon.id == 0) {
-      widget.weapon.id = UniqueKey().hashCode;
-    }
+    widget.weapon.ensureId();
     appState.setWeapon(widget.weapon);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(widget.snackText)),
+      SnackBar(content: Text("${widget.snackText} ${widget.weapon.name}")),
     );
     goBack(context);
   }
