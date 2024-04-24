@@ -178,20 +178,65 @@ void main() {
 
   test('Check pre-build costs', () {
     expect(
-        Weapon(1, "Small arms", WeaponType.ai, 20, 1, 0, []).cost(), equals(2));
+        Weapon(1, "Small arms",
+            type: WeaponType.ai,
+            range: 20,
+            shots: 1,
+            impact: 0,
+            traits: []).cost(),
+        equals(2));
     expect(
-        Weapon(2, "Buzzbombs", WeaponType.at, 10, 1, 3, []).cost(), equals(6));
-    expect(Weapon(3, "Machine gun", WeaponType.ai, 20, 2, 0, []).cost(),
+        Weapon(2, "Buzzbombs",
+                type: WeaponType.at, range: 10, shots: 1, impact: 3)
+            .cost(),
+        equals(6));
+    expect(
+        Weapon(
+          3,
+          "Machine gun",
+          type: WeaponType.ai,
+          range: 20,
+          shots: 2,
+          impact: 0,
+        ).cost(),
         equals(3)); // TODO: Differs from the rule book
-    expect(Weapon(4, "Gauss rifle", WeaponType.gp, 20, 1, 1, []).cost(),
+    expect(
+        Weapon(
+          4,
+          "Gauss rifle",
+          type: WeaponType.gp,
+          range: 20,
+          shots: 1,
+          impact: 1,
+        ).cost(),
         equals(6));
     expect(
-        Weapon(5, "Fusion gun", WeaponType.at, 10, 1, 4, []).cost(), equals(8));
-    expect(Weapon(6, "Plasma rifle", WeaponType.gp, 10, 1, 2, []).cost(),
+        Weapon(
+          5,
+          "Fusion gun",
+          type: WeaponType.at,
+          range: 10,
+          shots: 1,
+          impact: 4,
+        ).cost(),
+        equals(8));
+    expect(
+        Weapon(
+          6,
+          "Plasma rifle",
+          type: WeaponType.gp,
+          range: 10,
+          shots: 1,
+          impact: 2,
+        ).cost(),
         equals(6));
     expect(
-        Weapon(7, "Infantry laser", WeaponType.at, 40, 1, 3,
-            ["Heavy", "Targeting"]).cost(),
+        Weapon(7, "Infantry laser",
+            type: WeaponType.at,
+            range: 40,
+            shots: 1,
+            impact: 3,
+            traits: ["Heavy", "Targeting"]).cost(),
         equals(15));
   });
 }

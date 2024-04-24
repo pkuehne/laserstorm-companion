@@ -19,7 +19,8 @@ Widget makeTestableWidget({required child, AppState? state}) => MaterialApp(
 void main() {
   testWidgets('Item shows weapon name', (WidgetTester tester) async {
     // Given
-    final weapon = Weapon(10, "FooBar", WeaponType.gp, 10, 2, -5, []);
+    final weapon = Weapon(10, "FooBar",
+        type: WeaponType.gp, range: 10, shots: 2, impact: 5, traits: []);
     final state = AppState()..setWeapon(weapon);
     const widget = WeaponsPage();
 
@@ -32,7 +33,7 @@ void main() {
 
   testWidgets('Item shows range', (WidgetTester tester) async {
     // Given
-    final weapon = Weapon(10, "FooBar", WeaponType.gp, 10, 2, -5, []);
+    final weapon = Weapon(10, "FooBar", type: WeaponType.gp);
     final state = AppState()..setWeapon(weapon);
     const widget = WeaponsPage();
 

@@ -14,8 +14,19 @@ class Weapon {
   List<String> traits = [];
 
   Weapon.empty();
-  Weapon(this.id, this.name, this.type, this.range, this.shots, this.impact,
-      this.traits);
+  Weapon(this.id, this.name,
+      {this.type = WeaponType.ai,
+      this.range = 10,
+      this.shots = 1,
+      this.impact = 0,
+      this.traits = const []});
+  Weapon.clone(Weapon o)
+      : this(o.id, o.name,
+            type: o.type,
+            range: o.range,
+            shots: o.shots,
+            impact: o.impact,
+            traits: o.traits);
 
   double rangeCost() {
     double cost = 0.0;

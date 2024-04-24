@@ -5,15 +5,63 @@ import '../app_states.dart';
 import 'weapon.dart';
 import 'validators.dart' as validator;
 
-class AddEditWeaponDialog extends StatefulWidget {
+/// Holds weapon id argument for EditUnitPage
+class WeaponId {
   final int? id;
-  const AddEditWeaponDialog({
-    this.id,
+  WeaponId(this.id);
+}
+
+class AddWeaponPage extends StatelessWidget {
+  const AddWeaponPage({super.key});
+
+  static const routeName = '/laserstorm/weapon/add';
+
+  @override
+  Widget build(BuildContext context) {
+    return WeaponForm(
+      weapon: Weapon.empty(),
+      title: "Add Weapon",
+      snackText: "Added",
+    );
+  }
+}
+
+class EditWeaponPage extends StatelessWidget {
+  const EditWeaponPage({super.key});
+
+  static const routeName = '/laserstorm/weapon/edit';
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+    final args = ModalRoute.of(context)?.settings.arguments as WeaponId?;
+    final id = args?.id;
+    if (id == null || !appState.hasWeapon(id)) {
+      Navigator.of(context).pop();
+    }
+
+    return WeaponForm(
+      weapon: Weapon.clone(appState.getWeapon(id!)),
+      title: "Edit Unit",
+      snackText: "Updated",
+    );
+  }
+}
+
+class WeaponForm extends StatefulWidget {
+  final Weapon weapon;
+  final String title;
+  final String snackText;
+
+  const WeaponForm({
     super.key,
+    required this.weapon,
+    required this.title,
+    required this.snackText,
   });
 
   @override
-  State<AddEditWeaponDialog> createState() => _AddEditWeaponDialogState();
+  State<WeaponForm> createState() => _WeaponFormState();
 }
 
 const _weaponTypeList = [
@@ -31,54 +79,47 @@ const _weaponTypeList = [
   ),
 ];
 
-class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
+class _WeaponFormState extends State<WeaponForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  /// The [Weapon] being added/edited
-  Weapon weapon = Weapon.empty();
 
   void saveTraits(String? value) {
     if (value == null || value.isEmpty) {
-      weapon.traits = [];
+      widget.weapon.traits = [];
       return;
     }
     var traits = value.split(',');
-    weapon.traits = traits.map((e) => e.trim()).toList();
+    widget.weapon.traits = traits.map((e) => e.trim()).toList();
   }
 
   void deleteWeapon(BuildContext context) {
     final appState = Provider.of<AppState>(context, listen: false);
-    final snackText = "Removed ${weapon.name}";
+    final snackText = "Removed ${widget.weapon.name}";
 
-    appState.removeWeapon(weapon.id);
+    appState.removeWeapon(widget.weapon.id);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(snackText)),
     );
-    closeDialog(context);
+    goBack(context);
   }
 
-  void closeDialog(BuildContext context) {
+  void goBack(BuildContext context) {
     Navigator.of(context).pop();
   }
 
-  void submitDialog(BuildContext context) {
+  void submitChanges(BuildContext context) {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save(); // Store current values
     final appState = Provider.of<AppState>(context, listen: false);
-    String snackText = "";
-    if (weapon.id == 0) {
-      weapon.id = UniqueKey().hashCode;
-      snackText = "Added new weapon ${weapon.name}";
-    } else {
-      snackText = "Updated weapon ${weapon.name}";
+    if (widget.weapon.id == 0) {
+      widget.weapon.id = UniqueKey().hashCode;
     }
-    appState.setWeapon(weapon);
+    appState.setWeapon(widget.weapon);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(snackText)),
+      SnackBar(content: Text(widget.snackText)),
     );
-    closeDialog(context);
+    goBack(context);
   }
 
   void recalculateCost() {
@@ -91,11 +132,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    if (widget.id != null && appState.hasWeapon(widget.id!)) {
-      // Load the weapon
-      weapon = appState.getWeapon(widget.id!);
-    }
+    // var appState = Provider.of<AppState>(context, listen: false);
 
     return SingleChildScrollView(
       child: Column(
@@ -112,9 +149,9 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     labelText: 'Name:',
                     hintText: 'Weapon Name?',
                   ),
-                  initialValue: weapon.name,
+                  initialValue: widget.weapon.name,
                   validator: validator.notEmpty,
-                  onSaved: (v) => weapon.name = v!,
+                  onSaved: (v) => widget.weapon.name = v!,
                 ),
                 DropdownButtonFormField(
                   decoration: const InputDecoration(
@@ -122,10 +159,10 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     labelText: "Weapon Type",
                     hintText: "Type of weapon",
                   ),
-                  value: weapon.type,
+                  value: widget.weapon.type,
                   items: _weaponTypeList,
-                  onChanged: (v) => weapon.type = v!,
-                  onSaved: (v) => weapon.type = v!,
+                  onChanged: (v) => widget.weapon.type = v!,
+                  onSaved: (v) => widget.weapon.type = v!,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -133,7 +170,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     labelText: "Range:",
                     hintText: "Weapon Range in inches",
                   ),
-                  initialValue: weapon.range.toString(),
+                  initialValue: widget.weapon.range.toString(),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
@@ -141,7 +178,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                   validator: (v) =>
                       validator.notEmpty(v) ??
                       validator.strictlyPositiveNumber(v),
-                  onSaved: (v) => weapon.range = int.parse(v!),
+                  onSaved: (v) => widget.weapon.range = int.parse(v!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -149,7 +186,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     labelText: "Shots:",
                     hintText: "Dice per weapon",
                   ),
-                  initialValue: weapon.shots.toString(),
+                  initialValue: widget.weapon.shots.toString(),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
@@ -157,7 +194,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                   validator: (v) =>
                       validator.notEmpty(v) ??
                       validator.strictlyPositiveNumber(v),
-                  onSaved: (v) => weapon.shots = int.parse(v!),
+                  onSaved: (v) => widget.weapon.shots = int.parse(v!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -165,14 +202,14 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     labelText: "Impact:",
                     hintText: "",
                   ),
-                  initialValue: weapon.impact.toString(),
+                  initialValue: widget.weapon.impact.toString(),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   validator: (v) =>
                       validator.notEmpty(v) ?? validator.positiveNumber(v),
-                  onSaved: (v) => weapon.impact = int.parse(v!),
+                  onSaved: (v) => widget.weapon.impact = int.parse(v!),
                 ),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -180,7 +217,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     labelText: 'Traits:',
                     hintText: 'Aim, Heavy',
                   ),
-                  initialValue: weapon.traits.join(", "),
+                  initialValue: widget.weapon.traits.join(", "),
                   validator: validator.traits,
                   onSaved: saveTraits,
                 ),
@@ -191,7 +228,7 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
                     children: [
                       Text("Cost: ",
                           style: Theme.of(context).textTheme.titleLarge),
-                      Text(weapon.cost().toInt().toString(),
+                      Text(widget.weapon.cost().toInt().toString(),
                           style: Theme.of(context).textTheme.titleLarge),
                       IconButton(
                         onPressed: recalculateCost,
@@ -207,27 +244,12 @@ class _AddEditWeaponDialogState extends State<AddEditWeaponDialog> {
           const SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Visibility(
-                visible: weapon.id != 0,
-                child: IconButton(
-                  onPressed: () => deleteWeapon(context),
-                  icon: const Icon(Icons.delete),
-                  tooltip: "Delete this weapon",
-                ),
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () => closeDialog(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () => submitDialog(context),
-                child: const Text('Ok'),
-              ),
-            ],
+          Align(
+            alignment: Alignment.centerRight,
+            child: ElevatedButton(
+              onPressed: () => submitChanges(context),
+              child: const Text('Ok'),
+            ),
           ),
         ],
       ),

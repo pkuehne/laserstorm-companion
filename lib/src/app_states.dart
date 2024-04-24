@@ -6,9 +6,12 @@ import 'package:weasel/src/laserstorm/unit.dart';
 class AppState extends ChangeNotifier {
   var _counter = 0;
   final _weapons = {
-    1: Weapon(1, "Small arms", WeaponType.ai, 20, 1, 0, []),
-    2: Weapon(2, "Carl Gustav", WeaponType.at, 10, 1, 3, []),
-    3: Weapon(3, "Machine Gun", WeaponType.ai, 20, 2, 0, []),
+    1: Weapon(1, "Small arms",
+        type: WeaponType.ai, range: 20, shots: 1, impact: 0, traits: []),
+    2: Weapon(2, "Carl Gustav",
+        type: WeaponType.at, range: 10, shots: 1, impact: 3, traits: []),
+    3: Weapon(3, "Machine Gun",
+        type: WeaponType.ai, range: 20, shots: 2, impact: 0, traits: []),
   };
   final _stands = {
     1: Stand(1, "Infantry Fire-team"),
