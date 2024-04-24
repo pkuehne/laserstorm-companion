@@ -1,5 +1,28 @@
 import 'package:flutter/material.dart';
 
+class TileTitle extends StatelessWidget {
+  final String title;
+  final String cost;
+
+  const TileTitle({super.key, required this.title, required this.cost});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text("($cost pts)"),
+      ],
+    );
+  }
+}
+
 /// Displays a stat with an icon and tooltip
 ///
 /// The stat, its value and the icon to use must be supplied at creation.
@@ -22,9 +45,9 @@ class StatDisplay extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Tooltip(
         message: "$stat: $value",
-        child: Row(
+        child: Column(
           children: [
-            Icon(icon),
+            Text(stat),
             Text(value),
           ],
         ),

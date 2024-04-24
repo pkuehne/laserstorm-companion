@@ -66,14 +66,9 @@ class StandsPage extends StatelessWidget {
                         message: stand.type.toString(), // iconTooltip,
                         child: Icon(icon),
                       ),
-                      title: Row(
-                        children: [
-                          Text(stand.name),
-                          StatDisplay(
-                              stat: "Cost",
-                              value: stand.cost().toInt().toString(),
-                              icon: Icons.attach_money),
-                        ],
+                      title: TileTitle(
+                        title: stand.name,
+                        cost: stand.cost().toInt().toString(),
                       ),
                       subtitle: Visibility(
                         visible: MediaQuery.of(context).size.width > 350,

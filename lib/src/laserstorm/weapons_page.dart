@@ -72,17 +72,9 @@ class WeaponsPage extends StatelessWidget {
                         message: mainIcon.tooltip,
                         child: Icon(mainIcon.data),
                       ),
-                      title: Row(
-                        children: [
-                          Text(
-                            weapon.name,
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text("(${weapon.cost().toInt().toString()} pts)"),
-                        ],
+                      title: TileTitle(
+                        title: weapon.name,
+                        cost: weapon.cost().toInt().toString(),
                       ),
                       subtitle: Visibility(
                         visible: MediaQuery.of(context).size.width > 350,
@@ -93,7 +85,7 @@ class WeaponsPage extends StatelessWidget {
                                 value: weapon.range.toString(),
                                 icon: Icons.social_distance),
                             StatDisplay(
-                                stat: "Save",
+                                stat: "Impact",
                                 value: weapon.impact.toString(),
                                 icon: Icons.healing),
                             StatDisplay(

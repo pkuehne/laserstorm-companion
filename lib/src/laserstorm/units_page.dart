@@ -68,14 +68,9 @@ class UnitsPage extends StatelessWidget {
                         child: Icon(icon),
                       ),
                       trailing: const Icon(Icons.more_vert),
-                      title: Row(
-                        children: [
-                          Text(unit.name),
-                          StatDisplay(
-                              stat: "Cost",
-                              value: unit.cost().toInt().toString(),
-                              icon: Icons.attach_money),
-                        ],
+                      title: TileTitle(
+                        title: unit.name,
+                        cost: unit.cost().toInt().toString(),
                       ),
                       subtitle: Visibility(
                         visible: MediaQuery.of(context).size.width > 350,
