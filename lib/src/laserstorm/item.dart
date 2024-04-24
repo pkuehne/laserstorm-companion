@@ -14,4 +14,9 @@ abstract class Item {
     }
     return id;
   }
+
+  @override
+  toString() {
+    return name;
+  }
 }

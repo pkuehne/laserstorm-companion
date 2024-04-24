@@ -39,6 +39,7 @@ dependencies:
   objectbox_flutter_libs: any
   http: ^1.2.1
   firebase_core: ^2.28.0
+  multi_dropdown: ^2.1.4
 
 dev_dependencies:
   flutter_test:

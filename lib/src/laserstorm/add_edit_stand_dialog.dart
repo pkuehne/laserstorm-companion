@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/common_widgets.dart';
 import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
-import '../app_states.dart';
-import 'stand.dart';
+import 'package:weasel/src/app_states.dart';
+import 'package:weasel/src/laserstorm/stand.dart';
+import 'package:weasel/src/laserstorm/validators.dart' as validator;
+import 'package:weasel/src/laserstorm/weapon.dart';
 
-/// Holds stand id argument for EditUnitPage
+/// Holds stand id argument for EditStandPage
 class StandId {
   final int? id;
   StandId(this.id);
@@ -20,7 +23,7 @@ class AddStandPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StandForm(
       stand: Stand.empty(),
-      title: "Add Unit",
+      title: "Add Stand",
       snackText: "Added",
     );
   }
@@ -36,13 +39,13 @@ class EditStandPage extends StatelessWidget {
     var appState = Provider.of<AppState>(context, listen: false);
     final args = ModalRoute.of(context)?.settings.arguments as StandId?;
     final id = args?.id;
-    if (id == null || !appState.hasUnit(id)) {
+    if (id == null || !appState.hasStand(id)) {
       Navigator.of(context).pop();
     }
 
     return StandForm(
       stand: Stand.clone(appState.getStand(id!)),
-      title: "Edit Unit",
+      title: "Edit Stand",
       snackText: "Updated",
     );
   }
@@ -87,79 +90,26 @@ final _booleanTypeList = [
 
 class _StandFormState extends State<StandForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  Stand stand = Stand.empty();
-
-  String? nameValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a name!';
-    }
-    return null;
-  }
-
-  void saveName(String? value) {
-    stand.name = value!;
-  }
-
-  void saveType(StandType? value) {
-    stand.type = value!;
-  }
 
   String? movementValidator(MovementType? value) {
     if (value == null) {
       return 'A movement type must be selected!';
     }
-    if (stand.type == StandType.infantry && value != MovementType.wheel) {
+    if (widget.stand.type == StandType.infantry &&
+        value != MovementType.wheel) {
       return "Infantry can only be Wheeled";
     }
     return null;
-  }
-
-  void saveMovement(MovementType? value) {
-    stand.movement = value!;
   }
 
   String? minimumMoveValidator(bool? value) {
     if (value == null) {
       return 'A minimum move value must be selected';
     }
-    if (stand.movement != MovementType.grav && value == true) {
+    if (widget.stand.movement != MovementType.grav && value == true) {
       return "Only grav vehicles can have a minimum move distance";
     }
     return null;
-  }
-
-  void saveMinimumMove(bool? value) {
-    stand.hasMinimumMove = value!;
-  }
-
-  String? rangeValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a range!';
-    }
-    int numValue = int.parse(value);
-    if (numValue < 1) {
-      return "Range must be a positive number";
-    }
-    return null;
-  }
-
-  void saveAim(String? value) {
-    stand.aim = int.parse(value!);
-  }
-
-  String? shotsValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter number of shots!';
-    }
-    int numValue = int.parse(value);
-    if (numValue < 1) {
-      return "Shots must be a positive number";
-    }
-    return null;
-  }
-
-  void saveSpeed(String? value) {
-    stand.speed = int.parse(value!);
   }
 
   String? saveValidator(String? value) {
@@ -171,10 +121,6 @@ class _StandFormState extends State<StandForm> {
       return "Number must be negative";
     }
     return null;
-  }
-
-  void saveSave(String? value) {
-    stand.save = int.parse(value!);
   }
 
   String? traitValidator(String? value) {
@@ -202,11 +148,11 @@ class _StandFormState extends State<StandForm> {
 
   void saveTraits(String? value) {
     if (value == null || value.isEmpty) {
-      stand.traits = [];
+      widget.stand.traits = [];
       return;
     }
     var traits = value.split(',');
-    stand.traits = traits.map((e) => e.trim()).toList();
+    widget.stand.traits = traits.map((e) => e.trim()).toList();
   }
 
   void goBack(BuildContext context) {
@@ -237,14 +183,7 @@ class _StandFormState extends State<StandForm> {
 
   @override
   Widget build(BuildContext context) {
-    // var appState = Provider.of<AppState>(context, listen: false);
-    // var weaponList = appState.weapons.map<DropdownMenuItem<int>>((Weapon w) {
-    //   return DropdownMenuItem<int>(
-    //     value: w.id,
-    //     child: Text(w.name),
-    //   );
-    // }).toList();
-
+    var appState = Provider.of<AppState>(context, listen: false);
     return LaserStormScaffold(
       title: widget.title,
       body: SingleChildScrollView(
@@ -264,41 +203,41 @@ class _StandFormState extends State<StandForm> {
                           labelText: 'Name:',
                           hintText: 'Stand Name?',
                         ),
-                        initialValue: stand.name,
-                        validator: nameValidator,
-                        onSaved: saveName,
+                        initialValue: widget.stand.name,
+                        validator: validator.notEmpty,
+                        onSaved: (v) => widget.stand.name = v!,
                       ),
                       DropdownButtonFormField(
                         decoration: const InputDecoration(
                           labelText: "Stand Type",
                           hintText: "Type of stand",
                         ),
-                        value: stand.type,
+                        value: widget.stand.type,
                         items: _standTypeList,
-                        onChanged: saveType,
-                        onSaved: saveType,
+                        onChanged: (v) => widget.stand.type = v!,
+                        onSaved: (v) => widget.stand.type = v!,
                       ),
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Capacity:',
                           hintText: 'Transport capacity?',
                         ),
-                        initialValue: stand.transports.toString(),
+                        initialValue: widget.stand.transports.toString(),
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
                         ],
-                        onSaved: (v) => stand.transports = int.parse(v!),
+                        onSaved: (v) => widget.stand.transports = int.parse(v!),
                       ),
                       DropdownButtonFormField(
                         decoration: const InputDecoration(
                           labelText: "Movement Type",
                           hintText: "Type of movement",
                         ),
-                        value: stand.movement,
+                        value: widget.stand.movement,
                         items: _movementTypeList,
-                        onChanged: saveMovement,
-                        onSaved: saveMovement,
+                        onChanged: (v) => widget.stand.movement = v!,
+                        onSaved: (v) => widget.stand.movement = v!,
                         validator: movementValidator,
                       ),
                       DropdownButtonFormField(
@@ -306,11 +245,25 @@ class _StandFormState extends State<StandForm> {
                           labelText: "Minimum Move",
                           hintText: "Vehicle has minimum move distance",
                         ),
-                        value: stand.hasMinimumMove,
+                        value: widget.stand.hasMinimumMove,
                         items: _booleanTypeList,
-                        onChanged: saveMinimumMove,
-                        onSaved: saveMinimumMove,
+                        onChanged: (v) => widget.stand.hasMinimumMove = v!,
+                        onSaved: (v) => widget.stand.hasMinimumMove = v!,
                         validator: minimumMoveValidator,
+                      ),
+                      MultiSelectFormField<Weapon>(
+                        title: "Primary Weapons",
+                        onSaved: (v) => widget.stand.primaries = v!,
+                        validator: (v) => v == null ? "invalid" : null,
+                        items: appState.weapons,
+                        initialValue: widget.stand.primaries,
+                      ),
+                      MultiSelectFormField<Weapon>(
+                        title: "Selectable Weapons",
+                        onSaved: (v) => widget.stand.selectables = v!,
+                        validator: (v) => v == null ? "invalid" : null,
+                        items: appState.weapons,
+                        initialValue: widget.stand.selectables,
                       ),
                       Row(
                         children: [
@@ -320,13 +273,13 @@ class _StandFormState extends State<StandForm> {
                                 labelText: "Aim:",
                                 hintText: "Aim Range in inches",
                               ),
-                              initialValue: stand.aim.toString(),
+                              initialValue: widget.stand.aim.toString(),
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
-                              validator: rangeValidator,
-                              onSaved: saveAim,
+                              validator: validator.strictlyPositiveNumber,
+                              onSaved: (v) => widget.stand.aim = int.parse(v!),
                             ),
                           ),
                           Flexible(
@@ -335,13 +288,14 @@ class _StandFormState extends State<StandForm> {
                                 labelText: "Speed:",
                                 hintText: "How fast this stand moves",
                               ),
-                              initialValue: stand.speed.toString(),
+                              initialValue: widget.stand.speed.toString(),
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
-                              validator: shotsValidator,
-                              onSaved: saveSpeed,
+                              validator: validator.strictlyPositiveNumber,
+                              onSaved: (v) =>
+                                  widget.stand.speed = int.parse(v!),
                             ),
                           ),
                           Flexible(
@@ -350,27 +304,25 @@ class _StandFormState extends State<StandForm> {
                                 labelText: "Save:",
                                 hintText: "Base Save number",
                               ),
-                              initialValue: stand.save.toString(),
+                              initialValue: widget.stand.save.toString(),
                               keyboardType:
                                   const TextInputType.numberWithOptions(
                                       signed: true),
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
-                              validator: shotsValidator,
-                              onSaved: saveSave,
+                              validator: validator.strictlyPositiveNumber,
+                              onSaved: (v) => widget.stand.save = int.parse(v!),
                             ),
                           ),
                         ],
                       ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Traits:',
-                          hintText: 'Aim, Heavy',
-                        ),
-                        initialValue: stand.traits.join(", "),
-                        validator: traitValidator,
-                        onSaved: saveTraits,
+                      MultiSelectFormField<String>(
+                        title: "Traits:",
+                        onSaved: (v) => widget.stand.traits = v!,
+                        validator: (v) => v == null ? "invalid" : null,
+                        items: const ["Aim", "Heavy"],
+                        initialValue: widget.stand.traits,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
@@ -379,7 +331,7 @@ class _StandFormState extends State<StandForm> {
                           children: [
                             Text("Cost: ",
                                 style: Theme.of(context).textTheme.titleLarge),
-                            Text(stand.cost().toInt().toString(),
+                            Text(widget.stand.cost().toInt().toString(),
                                 style: Theme.of(context).textTheme.titleLarge),
                             IconButton(
                               onPressed: recalculateCost,
