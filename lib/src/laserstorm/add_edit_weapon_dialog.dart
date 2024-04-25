@@ -150,7 +150,6 @@ class _WeaponFormState extends State<WeaponForm> {
                     children: [
                       TextFormField(
                         decoration: const InputDecoration(
-                          icon: Icon(Icons.abc),
                           labelText: 'Name:',
                           hintText: 'Weapon Name?',
                         ),
@@ -160,7 +159,6 @@ class _WeaponFormState extends State<WeaponForm> {
                       ),
                       DropdownButtonFormField(
                         decoration: const InputDecoration(
-                          icon: Icon(Icons.all_out),
                           labelText: "Weapon Type",
                           hintText: "Type of weapon",
                         ),
@@ -171,7 +169,6 @@ class _WeaponFormState extends State<WeaponForm> {
                       ),
                       TextFormField(
                         decoration: const InputDecoration(
-                          icon: Icon(Icons.social_distance),
                           labelText: "Range:",
                           hintText: "Weapon Range in inches",
                         ),
@@ -187,7 +184,6 @@ class _WeaponFormState extends State<WeaponForm> {
                       ),
                       TextFormField(
                         decoration: const InputDecoration(
-                          icon: Icon(Icons.multiple_stop),
                           labelText: "Shots:",
                           hintText: "Dice per weapon",
                         ),
@@ -203,7 +199,6 @@ class _WeaponFormState extends State<WeaponForm> {
                       ),
                       TextFormField(
                         decoration: const InputDecoration(
-                          icon: Icon(Icons.healing),
                           labelText: "Impact:",
                           hintText: "",
                         ),

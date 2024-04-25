@@ -33,12 +33,12 @@ class StatDisplay extends StatelessWidget {
     super.key,
     required this.stat,
     required this.value,
-    required this.icon,
+    this.icon,
   });
 
   final String stat;
   final String value;
-  final IconData icon;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {

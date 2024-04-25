@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
+import 'package:weasel/src/laserstorm/template_page.dart';
 import '../app_states.dart';
 import 'add_edit_weapon_dialog.dart';
 import 'weapon.dart';
@@ -11,105 +11,57 @@ class WeaponsPage extends StatelessWidget {
 
   const WeaponsPage({super.key});
 
-  /// Edit an existing Weapon using the same dialog as the Add
-  void onPressedEdit(BuildContext context, int index) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    var weapon = appState.weapons[index];
-
-    Navigator.pushNamed(
-      context,
-      EditWeaponPage.routeName,
-      arguments: WeaponId(weapon.id),
-    );
-  }
-
-  void onPressedDelete(BuildContext context, int index) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    var weapon = appState.weapons[index];
-    appState.removeWeapon(weapon.id);
-  }
-
-  ({IconData data, String tooltip}) getIcon(Weapon weapon) {
-    return switch (weapon.type) {
-      WeaponType.ai => (data: Icons.person, tooltip: "Anti-Infantry"),
-      WeaponType.gp => (data: Icons.all_out, tooltip: "General Purpose"),
-      WeaponType.at => (data: Icons.car_crash, tooltip: "Anti-Tank"),
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<AppState>();
 
-    return LaserStormScaffold(
-      title: "Weapons",
-      addButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(
-          context,
-          AddWeaponPage.routeName,
-          arguments: null,
+    return TemplatePage<Weapon>(
+      onAdd: () => Navigator.pushNamed(
+        context,
+        AddWeaponPage.routeName,
+        arguments: null,
+      ),
+      onEdit: (weapon) => Navigator.pushNamed(
+        context,
+        EditWeaponPage.routeName,
+        arguments: WeaponId(weapon.id),
+      ),
+      onDuplicate: (weapon) => appState.duplicateWeapon(weapon),
+      onDelete: (weapon) => appState.removeWeapon(weapon.id),
+      getItem: (index) => appState.weapons[index],
+      templateName: "Weapon",
+      itemCount: appState.weapons.length,
+      leadingBuilder: (Weapon weapon) {
+        return switch (weapon.type) {
+          WeaponType.ai =>
+            TypeData(icon: Icons.person, tooltip: "Anti-Infantry"),
+          WeaponType.gp =>
+            TypeData(icon: Icons.all_out, tooltip: "General Purpose"),
+          WeaponType.at =>
+            TypeData(icon: Icons.car_crash, tooltip: "Anti-Tank"),
+        };
+      },
+      statBuilder: (weapon) => [
+        StatDisplay(
+          stat: "Range",
+          value: weapon.range.toString(),
         ),
-        tooltip: 'Add Weapon',
-        child: const Icon(Icons.add),
-      ),
-      body: Row(
-        children: [
-          Flexible(
-            child: ListView.builder(
-              itemCount: appState.weaponCount(),
-              itemBuilder: (BuildContext _, int index) {
-                final weapon = appState.weapons[index];
-                final mainIcon = getIcon(weapon);
-                return Center(
-                  child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints.loose(const Size(400, double.infinity)),
-                    child: ListTile(
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 20),
-                      onTap: () => onPressedEdit(context, index),
-                      leading: Tooltip(
-                        message: mainIcon.tooltip,
-                        child: Icon(mainIcon.data),
-                      ),
-                      title: TileTitle(
-                        title: weapon.name,
-                        cost: weapon.cost().toInt().toString(),
-                      ),
-                      subtitle: Visibility(
-                        visible: MediaQuery.of(context).size.width > 350,
-                        child: Row(
-                          children: [
-                            StatDisplay(
-                                stat: "Range",
-                                value: weapon.range.toString(),
-                                icon: Icons.social_distance),
-                            StatDisplay(
-                                stat: "Impact",
-                                value: weapon.impact.toString(),
-                                icon: Icons.healing),
-                            StatDisplay(
-                                stat: "Shots",
-                                value: weapon.shots.toString(),
-                                icon: Icons.multiple_stop),
-                            Visibility(
-                              visible: weapon.traits.isNotEmpty,
-                              child: StatDisplay(
-                                  stat: "Traits",
-                                  value: weapon.traits.join(", "),
-                                  icon: Icons.list),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+        StatDisplay(
+          stat: "Impact",
+          value: weapon.impact.toString(),
+        ),
+        StatDisplay(
+          stat: "Shots",
+          value: weapon.shots.toString(),
+        ),
+        Visibility(
+          visible: weapon.traits.isNotEmpty,
+          child: StatDisplay(
+            stat: "Traits",
+            value: weapon.traits.join(", "),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

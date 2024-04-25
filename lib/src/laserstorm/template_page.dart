@@ -3,6 +3,13 @@ import 'package:weasel/src/laserstorm/common_widgets.dart';
 import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
 import 'package:weasel/src/laserstorm/template.dart';
 
+class TypeData {
+  IconData icon;
+  String tooltip;
+
+  TypeData({required this.icon, required this.tooltip});
+}
+
 class TemplatePage<T extends Template> extends StatelessWidget {
   final String templateName;
   final void Function() onAdd;
@@ -11,7 +18,7 @@ class TemplatePage<T extends Template> extends StatelessWidget {
   final void Function(T) onDelete;
   final T Function(int) getItem;
   final List<Widget> Function(T) statBuilder;
-  final Widget Function(T) leadingBuilder;
+  final TypeData Function(T) leadingBuilder;
   final int itemCount;
 
   const TemplatePage({
@@ -23,8 +30,8 @@ class TemplatePage<T extends Template> extends StatelessWidget {
     required this.getItem,
     required this.templateName,
     required this.itemCount,
-    required this.statBuilder,
     required this.leadingBuilder,
+    required this.statBuilder,
   });
 
   @override
@@ -43,6 +50,7 @@ class TemplatePage<T extends Template> extends StatelessWidget {
               itemCount: itemCount,
               itemBuilder: (BuildContext _, int index) {
                 final item = getItem(index);
+                final leading = leadingBuilder(item);
 
                 return Center(
                   child: ConstrainedBox(
@@ -52,7 +60,10 @@ class TemplatePage<T extends Template> extends StatelessWidget {
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 20),
                       onTap: () => onEdit(item),
-                      leading: leadingBuilder(item),
+                      leading: Tooltip(
+                        message: leading.tooltip, // iconTooltip,
+                        child: Icon(leading.icon),
+                      ),
                       trailing: MenuAnchor(
                         builder: (BuildContext _, MenuController controller,
                             Widget? child) {

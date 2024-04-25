@@ -28,36 +28,32 @@ class UnitsPage extends StatelessWidget {
         EditUnitPage.routeName,
         arguments: UnitId(unit.id),
       ),
-      onDuplicate: (unit) => {appState.duplicateUnit(unit)},
-      onDelete: (unit) => {appState.removeUnit(unit.id)},
+      onDuplicate: (unit) => appState.duplicateUnit(unit),
+      onDelete: (unit) => appState.removeUnit(unit.id),
       getItem: (i) => appState.units[i],
       itemCount: appState.units.length,
       leadingBuilder: (Unit unit) {
-        return Tooltip(
-          message: unit.stand.type.toString(), // iconTooltip,
-          child: Icon(
-            switch (unit.stand.type) {
-              StandType.infantry => Icons.person,
-              _ => Icons.car_crash,
-            },
-          ),
+        return TypeData(
+          tooltip: unit.stand.type.toString(), // iconTooltip,
+          icon: switch (unit.stand.type) {
+            StandType.infantry => Icons.person,
+            _ => Icons.car_crash,
+          },
         );
       },
-      statBuilder: (Unit unit) {
-        return [
-          StatDisplay(
-              stat: "Stand Type",
-              value: "${unit.stand.name} x${unit.size}",
-              icon: Icons.keyboard_double_arrow_up),
-          Visibility(
-            visible: unit.stand.transports > 0,
-            child: StatDisplay(
-                stat: "Transports",
-                value: unit.transport?.name ?? "",
-                icon: Icons.train),
+      statBuilder: (Unit unit) => [
+        StatDisplay(
+          stat: "Stand Type",
+          value: "${unit.stand.name} x${unit.size}",
+        ),
+        Visibility(
+          visible: unit.stand.transports > 0,
+          child: StatDisplay(
+            stat: "Transports",
+            value: unit.transport?.name ?? "",
           ),
-        ];
-      },
+        ),
+      ],
     );
   }
 }
