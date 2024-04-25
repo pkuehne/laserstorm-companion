@@ -1,4 +1,4 @@
-import 'package:weasel/src/laserstorm/item.dart';
+import 'package:weasel/src/laserstorm/template.dart';
 
 enum WeaponType {
   gp,
@@ -6,7 +6,7 @@ enum WeaponType {
   at,
 }
 
-class Weapon extends Item {
+class Weapon extends Template {
   WeaponType type = WeaponType.ai;
   int range = 10;
   int impact = 0;

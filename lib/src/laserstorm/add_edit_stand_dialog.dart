@@ -204,7 +204,7 @@ class _StandFormState extends State<StandForm> {
                           hintText: 'Stand Name?',
                         ),
                         initialValue: widget.stand.name,
-                        validator: validator.notEmpty,
+                        validator: (v) => validator.notEmpty(v),
                         onSaved: (v) => widget.stand.name = v!,
                       ),
                       DropdownButtonFormField(
@@ -228,6 +228,9 @@ class _StandFormState extends State<StandForm> {
                           FilteringTextInputFormatter.digitsOnly,
                         ],
                         onSaved: (v) => widget.stand.transports = int.parse(v!),
+                        validator: (v) =>
+                            validator.notEmpty(v) ??
+                            validator.positiveNumber(v),
                       ),
                       DropdownButtonFormField(
                         decoration: const InputDecoration(
@@ -321,11 +324,13 @@ class _StandFormState extends State<StandForm> {
                         title: "Traits:",
                         onSaved: (v) => widget.stand.traits = v!,
                         validator: (v) => v == null ? "invalid" : null,
-                        items: const ["Aim", "Heavy"],
+                        items: const ["Aim", "Heavy"], //TODO: Add all traits
                         initialValue: widget.stand.traits,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
+                        // TODO: Make cost calculation a form field
+                        // Then add custom validator for the additional logic
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [

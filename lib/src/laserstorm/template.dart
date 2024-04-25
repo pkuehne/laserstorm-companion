@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-abstract class Item {
+abstract class Template {
   int id;
   String name;
 
-  Item({this.id = 0, this.name = ""});
+  Template({this.id = 0, this.name = ""});
 
   double cost();
 

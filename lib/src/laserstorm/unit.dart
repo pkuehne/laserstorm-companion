@@ -1,8 +1,8 @@
-import 'package:weasel/src/laserstorm/item.dart';
+import 'package:weasel/src/laserstorm/template.dart';
 
 import 'stand.dart';
 
-class Unit extends Item {
+class Unit extends Template {
   Stand stand;
   int size = 1;
   Stand? transport;

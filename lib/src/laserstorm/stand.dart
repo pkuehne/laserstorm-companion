@@ -1,4 +1,4 @@
-import 'package:weasel/src/laserstorm/item.dart';
+import 'package:weasel/src/laserstorm/template.dart';
 
 import 'weapon.dart';
 
@@ -44,7 +44,7 @@ enum MovementType {
   }
 }
 
-class Stand extends Item {
+class Stand extends Template {
   StandType type = StandType.infantry;
   MovementType movement = MovementType.wheel;
   bool hasMinimumMove = false;

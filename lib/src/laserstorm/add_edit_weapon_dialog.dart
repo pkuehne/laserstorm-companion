@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/common_widgets.dart';
 import 'package:weasel/src/laserstorm/laser_storm_scaffold.dart';
 import '../app_states.dart';
 import 'weapon.dart';
@@ -216,25 +217,28 @@ class _WeaponFormState extends State<WeaponForm> {
                             validator.positiveNumber(v),
                         onSaved: (v) => widget.weapon.impact = int.parse(v!),
                       ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.list),
-                          labelText: 'Traits:',
-                          hintText: 'Aim, Heavy',
-                        ),
-                        initialValue: widget.weapon.traits.join(", "),
-                        validator: validator.traits,
-                        onSaved: saveTraits,
+                      MultiSelectFormField<String>(
+                        title: "Traits:",
+                        onSaved: (v) => widget.weapon.traits = v!,
+                        validator: (v) => v == null
+                            ? "invalid"
+                            : null, // TODO: Validate traits
+                        items: const ["Aim", "Heavy"], //TODO: Add all traits
+                        initialValue: widget.weapon.traits,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text("Cost: ",
-                                style: Theme.of(context).textTheme.titleLarge),
-                            Text(widget.weapon.cost().toInt().toString(),
-                                style: Theme.of(context).textTheme.titleLarge),
+                            Text(
+                              "Cost: ",
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Text(
+                              widget.weapon.cost().toInt().toString(),
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
                             IconButton(
                               onPressed: recalculateCost,
                               icon: const Icon(Icons.calculate),
