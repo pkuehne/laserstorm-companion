@@ -4,53 +4,68 @@ import 'package:weasel/src/laserstorm/weapon.dart';
 import 'package:weasel/src/laserstorm/unit.dart';
 
 class AppState extends ChangeNotifier {
-  var _counter = 0;
-  final _weapons = {
-    1: Weapon(
-        id: 1,
-        name: "Small arms",
+  AppState({bool initialize = true}) {
+    if (initialize) {
+      initializeSamples();
+    }
+  }
+
+  initializeSamples() {
+    var smallArms = Weapon(
+        name: "Small Arms",
         type: WeaponType.ai,
         range: 20,
         shots: 1,
-        impact: 0,
-        traits: []),
-    2: Weapon(
-        id: 2,
+        impact: 0);
+    setWeapon(smallArms);
+    var carlGustav = Weapon(
         name: "Carl Gustav",
         type: WeaponType.at,
         range: 10,
         shots: 1,
-        impact: 3,
-        traits: []),
-    3: Weapon(
+        impact: 3);
+    setWeapon(carlGustav);
+    var mg = Weapon(
         id: 3,
         name: "Machine Gun",
-        type: WeaponType.ai,
+        type: WeaponType.gp,
         range: 20,
         shots: 2,
         impact: 0,
-        traits: []),
-  };
-  final _stands = {
-    1: Stand(id: 1, name: "Infantry Fire-team"),
-    2: Stand(
-      id: 2,
+        traits: []);
+    setWeapon(mg);
+
+    var fireTeam = Stand(
+      name: "Infantry Fire-team",
+      primaries: [smallArms],
+      selectables: [mg, carlGustav],
+    );
+    setStand(fireTeam);
+    var ifv = Stand(
       name: "Infantry Fighting Vehicle",
       type: StandType.vehicle,
-      transports: 6,
-    ),
-  };
+      primaries: [mg],
+      transports: 2,
+    );
+    setStand(ifv);
 
-  final _units = {
-    1: Unit(
-      id: 1,
-      name: "Marine Company",
-      stand: Stand(id: 1, name: "Infantry Fire-team"),
-    ),
-  };
+    var squad = Unit(
+      name: "Infantry Platoon",
+      stand: fireTeam,
+      size: 6,
+      transportSize: 3,
+      transport: ifv,
+    );
+    setUnit(squad);
+  }
+
+  final Map<int, Weapon> _weapons = {};
+  final Map<int, Stand> _stands = {};
+  final Map<int, Unit> _units = {};
 
   /// Creates or updates the given [Weapon] based on its id field
   void setWeapon(Weapon weapon) {
+    weapon.ensureId();
     _weapons[weapon.id] = weapon;
     notifyListeners();
   }
@@ -83,6 +98,7 @@ class AppState extends ChangeNotifier {
 
   // Stand
   void setStand(Stand stand) {
+    stand.ensureId();
     _stands[stand.id] = stand;
     notifyListeners();
   }
@@ -106,6 +122,7 @@ class AppState extends ChangeNotifier {
 
   // Units
   void setUnit(Unit unit) {
+    unit.ensureId();
     _units[unit.id] = unit;
     notifyListeners();
   }
@@ -125,17 +142,6 @@ class AppState extends ChangeNotifier {
 
   bool hasUnit(int id) {
     return _units.containsKey(id);
-  }
-
-  // Counters
-
-  void incrementCounter() {
-    _counter++;
-    notifyListeners();
-  }
-
-  int get counter {
-    return _counter;
   }
 }
 
