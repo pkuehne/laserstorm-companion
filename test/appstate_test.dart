@@ -27,5 +27,20 @@ void main() {
       // Then
       expect(w.id, equals(1234));
     });
+
+    test("Duplicate weapon creates two", () {
+      // Given
+      var state = AppState(initialize: false);
+      var w = Weapon(name: "Foo");
+      w.id = 1234;
+      state.setWeapon(w);
+
+      // When
+      state.duplicateWeapon(w);
+
+      // Then
+      expect(w.id, equals(1234));
+      expect(state.weapons.length, equals(2));
+    });
   });
 }

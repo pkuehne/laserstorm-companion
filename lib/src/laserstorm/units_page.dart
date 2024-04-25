@@ -67,7 +67,34 @@ class UnitsPage extends StatelessWidget {
                         message: unit.stand.type.toString(), // iconTooltip,
                         child: Icon(icon),
                       ),
-                      trailing: const Icon(Icons.more_vert),
+                      trailing: MenuAnchor(
+                        builder: (BuildContext _, MenuController controller,
+                            Widget? child) {
+                          return IconButton(
+                            onPressed: controller.open,
+                            icon: const Icon(Icons.more_vert),
+                            tooltip: 'Show menu',
+                          );
+                        },
+                        menuChildren: [
+                          MenuItemButton(
+                            leadingIcon: const Icon(Icons.edit),
+                            onPressed: () => onPressedEdit(context, index),
+                            child: const Text("Edit"),
+                          ),
+                          MenuItemButton(
+                            leadingIcon: const Icon(Icons.copy),
+                            onPressed: () => {appState.duplicateUnit(unit)},
+                            child: const Text("Duplicate"),
+                          ),
+                          const Divider(),
+                          MenuItemButton(
+                            leadingIcon: const Icon(Icons.delete),
+                            onPressed: () => {appState.removeUnit(unit.id)},
+                            child: const Text("Delete"),
+                          )
+                        ],
+                      ),
                       title: TileTitle(
                         title: unit.name,
                         cost: unit.cost().toInt().toString(),

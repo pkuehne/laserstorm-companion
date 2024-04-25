@@ -70,6 +70,12 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void duplicateWeapon(Weapon weapon) {
+    var newWeapon = Weapon.clone(weapon);
+    newWeapon.id = 0;
+    setWeapon(newWeapon);
+  }
+
   void removeWeapon(int id) {
     _weapons.remove(id);
     notifyListeners();
@@ -103,6 +109,12 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void duplicateStand(Stand stand) {
+    var newStand = Stand.clone(stand);
+    newStand.id = 0;
+    setStand(newStand);
+  }
+
   void removeStand(int id) {
     _stands.remove(id);
     notifyListeners();
@@ -125,6 +137,12 @@ class AppState extends ChangeNotifier {
     unit.ensureId();
     _units[unit.id] = unit;
     notifyListeners();
+  }
+
+  void duplicateUnit(Unit unit) {
+    var newUnit = Unit.clone(unit);
+    newUnit.id = 0;
+    setUnit(newUnit);
   }
 
   void removeUnit(int id) {
