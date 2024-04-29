@@ -11,9 +11,14 @@ class TileTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 18),
+        Flexible(
+          flex: 1,
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 18),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         const SizedBox(
           width: 10,
@@ -49,7 +54,11 @@ class StatDisplay extends StatelessWidget {
         child: Column(
           children: [
             Text(stat),
-            Text(value),
+            Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),

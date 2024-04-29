@@ -55,7 +55,7 @@ class TemplatePage<T extends Template> extends StatelessWidget {
                 return Center(
                   child: ConstrainedBox(
                     constraints:
-                        BoxConstraints.loose(const Size(400, double.infinity)),
+                        BoxConstraints.loose(const Size(500, double.infinity)),
                     child: ListTile(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 20),
@@ -102,6 +102,7 @@ class TemplatePage<T extends Template> extends StatelessWidget {
                           children: statBuilder(item),
                         ),
                       ),
+                      isThreeLine: true,
                     ),
                   ),
                 );

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/app_states.dart';
+import 'package:weasel/src/laserstorm/add_edit_weapon_dialog.dart';
+import 'package:weasel/src/laserstorm/common_widgets.dart';
 import 'package:weasel/src/laserstorm/template_page.dart';
-import '../app_states.dart';
-import 'add_edit_weapon_dialog.dart';
-import 'weapon.dart';
-import 'common_widgets.dart';
+import 'package:weasel/src/laserstorm/weapon.dart';
 
 class WeaponsPage extends StatelessWidget {
   static const String routeName = "/laserstorm/weapons/";

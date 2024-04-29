@@ -218,7 +218,17 @@ class _WeaponFormState extends State<WeaponForm> {
                         validator: (v) => v == null
                             ? "invalid"
                             : null, // TODO: Validate traits
-                        items: const ["Aim", "Heavy"], //TODO: Add all traits
+                        items: const [
+                          "A.I. Guided",
+                          "Anti-Aircraft",
+                          "Burst",
+                          "Flame",
+                          "Frag",
+                          "Heavy",
+                          "Indirect",
+                          "Repeating Fire",
+                          "Targeting"
+                        ],
                         initialValue: widget.weapon.traits,
                       ),
                       Padding(
