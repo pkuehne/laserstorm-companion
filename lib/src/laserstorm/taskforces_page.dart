@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weasel/src/laserstorm/add_edit_taskforce_page.dart';
 import 'package:weasel/src/laserstorm/common_widgets.dart';
 import 'package:weasel/src/laserstorm/taskforce.dart';
 import 'package:weasel/src/laserstorm/template_page.dart';
@@ -16,20 +17,18 @@ class TaskForcesPage extends StatelessWidget {
 
     return TemplatePage<TaskForce>(
       templateName: "Task Force",
-      onAdd: () {},
-      onEdit: (tf) {},
-      // onAdd: () => Navigator.pushNamed(
-      //   context,
-      //   AddTaskForcePage.routeName,
-      //   arguments: null,
-      // ),
-      // onEdit: (tf) => Navigator.pushNamed(
-      //   context,
-      //   EditTaskForcePage.routeName,
-      //   arguments: TaskForceId(tf.id),
-      // ),
-      onDuplicate: (tf) => appState.duplicateTaskforce(tf),
-      onDelete: (tf) => appState.removeTaskforce(tf),
+      onAdd: () => Navigator.pushNamed(
+        context,
+        AddTaskForcePage.routeName,
+        arguments: null,
+      ),
+      onEdit: (tf) => Navigator.pushNamed(
+        context,
+        EditTaskForcePage.routeName,
+        arguments: TaskForceId(tf.id),
+      ),
+      onDuplicate: (tf) => appState.duplicateTaskForce(tf),
+      onDelete: (tf) => appState.removeTaskForce(tf),
       getItem: (i) => appState.taskforces[i],
       itemCount: appState.taskforces.length,
       leadingBuilder: (TaskForce tf) {

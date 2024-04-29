@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weasel/src/laserstorm/add_edit_stand_dialog.dart';
+import 'package:weasel/src/laserstorm/add_edit_stand_page.dart';
+import 'package:weasel/src/laserstorm/add_edit_taskforce_page.dart';
 import 'package:weasel/src/laserstorm/add_edit_unit_page.dart';
-import 'package:weasel/src/laserstorm/add_edit_weapon_dialog.dart';
+import 'package:weasel/src/laserstorm/add_edit_weapon_page.dart';
 import 'package:weasel/src/laserstorm/stands_page.dart';
 import 'package:weasel/src/laserstorm/taskforces_page.dart';
 import 'package:weasel/src/laserstorm/units_page.dart';
@@ -38,8 +39,8 @@ class MyApp extends StatelessWidget {
           AddUnitPage.routeName: (context) => const AddUnitPage(),
           EditUnitPage.routeName: (context) => const EditUnitPage(),
           TaskForcesPage.routeName: (context) => const TaskForcesPage(),
-          // AddTaskForcePage.routeName: (context) => const AddTaskForcePage(),
-          // EditTaskForcePage.routeName: (context) => const EditTaskForcePage(),
+          AddTaskForcePage.routeName: (context) => const AddTaskForcePage(),
+          EditTaskForcePage.routeName: (context) => const EditTaskForcePage(),
           '/': (context) => const Placeholder(),
         },
       ),

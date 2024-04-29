@@ -165,19 +165,19 @@ class AppState extends ChangeNotifier {
   }
 
   // Taskforces
-  void setTaskforce(TaskForce tf) {
+  void setTaskForce(TaskForce tf) {
     tf.ensureId();
     _taskforces[tf.id] = tf;
     notifyListeners();
   }
 
-  void duplicateTaskforce(TaskForce tf) {
+  void duplicateTaskForce(TaskForce tf) {
     var newTaskforce = TaskForce.clone(tf);
     newTaskforce.id = 0;
-    setTaskforce(tf);
+    setTaskForce(newTaskforce);
   }
 
-  void removeTaskforce(TaskForce tf) {
+  void removeTaskForce(TaskForce tf) {
     _taskforces.remove(tf.id);
     notifyListeners();
   }
@@ -186,7 +186,7 @@ class AppState extends ChangeNotifier {
     return _taskforces.values.toList();
   }
 
-  TaskForce getTaskforce(int id) {
+  TaskForce getTaskForce(int id) {
     return _taskforces[id]!;
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weasel/src/app_states.dart';
-import 'package:weasel/src/laserstorm/add_edit_stand_dialog.dart';
+import 'package:weasel/src/laserstorm/add_edit_stand_page.dart';
 import 'package:weasel/src/laserstorm/common_widgets.dart';
 import 'package:weasel/src/laserstorm/stand.dart';
 import 'package:weasel/src/laserstorm/template_page.dart';
