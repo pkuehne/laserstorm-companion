@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:weasel/src/laserstorm/stands_page.dart';
+import 'package:weasel/src/laserstorm/taskforces_page.dart';
 import 'package:weasel/src/laserstorm/units_page.dart';
 import 'package:weasel/src/laserstorm/weapons_page.dart';
 
@@ -15,7 +16,7 @@ List<DrawerItem> drawers = [
   DrawerItem("Weapons", WeaponsPage.routeName),
   DrawerItem("Stands", StandsPage.routeName),
   DrawerItem("Units", UnitsPage.routeName),
-  DrawerItem("Task Forces", "/"),
+  DrawerItem("Task Forces", TaskForcesPage.routeName),
 ];
 
 class LaserStormScaffold extends StatelessWidget {

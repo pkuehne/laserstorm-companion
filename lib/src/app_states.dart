@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weasel/src/laserstorm/stand.dart';
+import 'package:weasel/src/laserstorm/taskforce.dart';
 import 'package:weasel/src/laserstorm/weapon.dart';
 import 'package:weasel/src/laserstorm/unit.dart';
 
@@ -62,6 +63,7 @@ class AppState extends ChangeNotifier {
   final Map<int, Weapon> _weapons = {};
   final Map<int, Stand> _stands = {};
   final Map<int, Unit> _units = {};
+  final Map<int, TaskForce> _taskforces = {};
 
   /// Creates or updates the given [Weapon] based on its id field
   void setWeapon(Weapon weapon) {
@@ -160,6 +162,32 @@ class AppState extends ChangeNotifier {
 
   bool hasUnit(int id) {
     return _units.containsKey(id);
+  }
+
+  // Taskforces
+  void setTaskforce(TaskForce tf) {
+    tf.ensureId();
+    _taskforces[tf.id] = tf;
+    notifyListeners();
+  }
+
+  void duplicateTaskforce(TaskForce tf) {
+    var newTaskforce = TaskForce.clone(tf);
+    newTaskforce.id = 0;
+    setTaskforce(tf);
+  }
+
+  void removeTaskforce(TaskForce tf) {
+    _taskforces.remove(tf.id);
+    notifyListeners();
+  }
+
+  List<TaskForce> get taskforces {
+    return _taskforces.values.toList();
+  }
+
+  TaskForce getTaskforce(int id) {
+    return _taskforces[id]!;
   }
 }
 
